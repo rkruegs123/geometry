@@ -21,6 +21,7 @@ section
 variables {α β : Type} [HasOn α] [HasOn β]
 
 def intersectAt (x : α) (y : β) : Set Point := λ p => on p x ∧ on p y
+def intersectAt₂ (x : α) (y : β) (p avoid : Point) : Prop := intersectAt x y p ∧ p ≠ avoid
 def intersect (x : α) (y : β) : Prop := Exists (intersectAt x y)
 def allIntersectAt (xs : List α) : Set Point := λ p => xs.allP (on p)
 def allIntersect (xs : List α) : Prop := Exists (allIntersectAt xs)

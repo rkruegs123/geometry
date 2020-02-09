@@ -13,12 +13,9 @@ let ω := incircle ⟨A, B, C⟩;
 tangentAt ω (Seg.mk B C) D →
 tangentAt ω (Seg.mk C A) E →
 tangentAt ω (Seg.mk A B) F →
-intersectAt (Line.mk D (foot D ⟨E, F⟩)) ω R →
-R ≠ D → -- alt: intersectsAt₂
-intersectAt (Line.mk A R) ω P →
-P ≠ R →
-intersectAt (circumcircle ⟨P, C, E⟩) (circumcircle ⟨P, B, F⟩) Q →
-Q ≠ P →
+intersectAt₂ (Line.mk D (foot D ⟨E, F⟩)) ω R D →
+intersectAt₂ (Line.mk A R) ω P R →
+intersectAt₂ (circumcircle ⟨P, C, E⟩) (circumcircle ⟨P, B, F⟩) Q P →
 allIntersect [Line.mk D I, Line.mk P Q, Line.mk A (perpTo A I)]
 
 end Geo
