@@ -6,7 +6,7 @@ open Geo.Triangle
 
 def IMO_2018_P1 : Prop :=
 ∀ (A B C D E F G : Point),
-isAcute ⟨A, B, C⟩ →
+acute ⟨A, B, C⟩ →
 let Γ := circumcircle ⟨A, B, C⟩;
 on D (Seg.mk A B) →
 on E (Seg.mk A C) →

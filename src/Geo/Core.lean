@@ -1,5 +1,8 @@
 import Geo.Background.Real
+import Geo.Background.List
+import Geo.Background.Vec
 import Geo.Background.Set
+import Geo.Background.Tuple
 
 /-
 Currently, we do not require NDGs in the constructions.
@@ -137,38 +140,12 @@ end Arc
 
 def isChord (Γ : Circle) (l : Seg) : Prop := on l.src Γ ∧ on l.dst Γ
 
-structure Triple (α : Type) : Type := (A B C : α)
-
-namespace Triple
-
-variables {α β : Type}
-def map (f : α → β) : Triple α → Triple β
-| ⟨A, B, C⟩ => ⟨f A, f B, f C⟩
-
-instance : Functor Triple := { map := @map }
-
-def cycle : Triple α → Triple α
-| ⟨A, B, C⟩ => ⟨B, C, A⟩
-
-def cycles (t : Triple α) : Triple (Triple α) :=
-⟨t, t.cycle, t.cycle.cycle⟩
-
-def cmap (f : Triple α → β) (t : Triple α) : Triple β :=
-f <$> t.cycles
-
--- TODO: much more abstract typeclass?
-def any (p : α → Prop) : Triple α → Prop
-| ⟨A, B, C⟩ => p A ∨ p B ∨ p C
-
-def all (p : α → Prop) : Triple α → Prop
-| ⟨A, B, C⟩ => p A ∧ p B ∧ p C
-
-end Triple
-
 open Triple (cmap any all)
 
-noncomputable def uangle : Triple Point → ℝ2π := SKIP
-noncomputable def dangle : Triple Point → ℝπ  := SKIP
+def Angle : Type := Triple Point
+
+noncomputable def uangle : Angle → ℝ2π := SKIP
+noncomputable def dangle : Angle → ℝπ  := SKIP
 
 def Triangle : Type := Triple Point
 
@@ -189,23 +166,26 @@ noncomputable instance : HasSignedArea Triangle := ⟨Triangle.sarea⟩
 def sides : Triangle → Triple Seg
 | ⟨A, B, C⟩ => ⟨⟨B, C⟩, ⟨C, A⟩, ⟨A, B⟩⟩
 
-noncomputable def sideLengths (t : Triangle) : Triple ℝ≥ :=
-ulen <$> sides t
+noncomputable def sideLengths (tri : Triangle) : Triple ℝ≥ :=
+ulen <$> sides tri
 
 def esides : Triangle → Triple Line
 | ⟨A, B, C⟩ => ⟨⟨B, C⟩, ⟨C, A⟩, ⟨A, B⟩⟩
 
-noncomputable def uangles (t : Triangle) : Triple ℝ2π :=
-uangle <$> t.cycles
+noncomputable def angles (tri : Triangle) : Triple Angle :=
+tri.cycles
 
-noncomputable def dangles (t : Triangle) : Triple ℝπ  :=
-dangle <$> t.cycles
+noncomputable def uangles (tri : Triangle) : Triple ℝ2π :=
+uangle <$> tri.angles
+
+noncomputable def dangles (tri : Triangle) : Triple ℝπ  :=
+dangle <$> tri.angles
 
 noncomputable def altitudes : Triangle → Triple Line :=
-cmap $ λ t => ⟨t.A, foot t.A ⟨t.B, t.C⟩⟩
+cmap $ λ tri => ⟨tri.A, foot tri.A ⟨tri.B, tri.C⟩⟩
 
 noncomputable def medians : Triangle → Triple Line :=
-cmap $ λ t => ⟨t.A, midp (Seg.mk t.B t.C)⟩
+cmap $ λ tri => ⟨tri.A, midp (Seg.mk tri.B tri.C)⟩
 
 noncomputable def circumcenter  : Triangle → Point := SKIP
 noncomputable def incenter      : Triangle → Point := SKIP
@@ -223,22 +203,94 @@ noncomputable def exradii        : Triangle → Triple ℝ₊ := SKIP
 
 noncomputable def pedalTriangle  : Triangle → Point → Triangle := SKIP
 
-noncomputable def orthicTriangle (t : Triangle) : Triangle :=
-pedalTriangle t t.orthocenter
+noncomputable def orthicTriangle (tri : Triangle) : Triangle :=
+pedalTriangle tri tri.orthocenter
 
-noncomputable def medialTriangle (t : Triangle) : Triangle :=
-pedalTriangle t t.circumcenter
+noncomputable def medialTriangle (tri : Triangle) : Triangle :=
+pedalTriangle tri tri.circumcenter
 
-noncomputable def ceviansThrough (t : Triangle) (p : Point) : Triple Line := SKIP
+noncomputable def ceviansThrough (tri : Triangle) (p : Point) : Triple Line := SKIP
 
 -- Awkward
-def isCevian (t : Triangle) (l : Seg) : Prop :=
-any (λ (t : Triangle) => t.A = l.src ∧ on l.dst t.esides.A) t.cycles
+def cevian (tri : Triangle) (l : Seg) : Prop :=
+any (λ (tri : Triangle) => tri.A = l.src ∧ on l.dst tri.esides.A) tri.cycles
 
-def isAcute (t : Triangle)     : Prop := SKIP
-def isScalene (t : Triangle)   : Prop := SKIP
-def isIsosceles (t : Triangle) : Prop := SKIP
+def acute (tri : Triangle)     : Prop := SKIP
+def scalene (tri : Triangle)   : Prop := SKIP
+def isosceles (tri : Triangle) : Prop := SKIP
 
 end Triangle
+
+open Quadruple (cmap any all)
+
+def Quadrilateral : Type := Quadruple Point
+
+namespace Quadrilateral
+
+protected def on : Point → Quadrilateral → Prop := SKIP
+instance : HasOn Quadrilateral := ⟨Quadrilateral.on⟩
+
+protected def inside : Point → Quadrilateral → Prop := SKIP
+instance : HasInside Quadrilateral := ⟨Quadrilateral.inside⟩
+
+protected noncomputable def uarea : Quadrilateral → ℝ₊ := SKIP
+noncomputable instance : HasUnsignedArea Quadrilateral := ⟨Quadrilateral.uarea⟩
+
+protected noncomputable def sarea : Quadrilateral → ℝ := SKIP
+noncomputable instance : HasSignedArea Quadrilateral := ⟨Quadrilateral.sarea⟩
+
+def sides : Quadrilateral → Quadruple Seg
+| ⟨A, B, C, D⟩ => ⟨⟨A, B⟩, ⟨B, C⟩, ⟨C, D⟩, ⟨D, A⟩⟩
+
+noncomputable def sideLengths (quad : Quadrilateral) : Quadruple ℝ≥ :=
+ulen <$> sides quad
+
+def esides : Quadrilateral → Quadruple Line
+| ⟨A, B, C, D⟩ => ⟨⟨A, B⟩, ⟨B, C⟩, ⟨C, D⟩, ⟨D, A⟩⟩
+
+noncomputable def angles : Quadrilateral → Quadruple Angle
+| ⟨A, B, C, D⟩ => ⟨⟨D, A, B⟩, ⟨A, B, C⟩, ⟨B, C, D⟩, ⟨C, D, A⟩⟩
+
+noncomputable def uangles (quad : Quadrilateral) : Quadruple ℝ2π :=
+uangle <$> quad.angles
+
+noncomputable def dangles (quad : Quadrilateral) : Quadruple ℝπ  :=
+dangle <$> quad.angles
+
+def convex   : Quadrilateral → Prop := SKIP
+def regular  : Quadrilateral → Prop := SKIP
+def harmonic : Quadrilateral → Prop := SKIP
+
+def parallelogram (quad : Quadrilateral) : Prop :=
+convex quad ∧ para quad.esides.A quad.esides.C ∧ para quad.esides.B quad.esides.D
+
+def trapezoid (quad : Quadrilateral) : Prop :=
+convex quad ∧ (para quad.esides.A quad.esides.C ∨ para quad.esides.B quad.esides.D)
+
+end Quadrilateral
+
+/-
+Triangle and Quadrilateral could be made Polygons.
+For now, we keep it this way for convienence,
+and only use Polygon for n ≥ 5.
+-/
+structure Polygon (n : Nat) : Type := (ps : Vec Point n)
+
+namespace Polygon
+
+variables {n : Nat}
+
+def vertices (pgon : Polygon n) : Vec Point n := pgon.ps
+noncomputable def sides (pgon : Polygon n)  : Vec Seg n := SKIP
+noncomputable def sideLengths (pgon : Polygon n)  : Vec ℝ≥ n := SKIP
+noncomputable def esides (pgon : Polygon n) : Vec Line n := SKIP
+noncomputable def angles (pgon : Polygon n) : Vec Angle n := SKIP
+
+def convex : Polygon n → Prop := SKIP
+def regular : Polygon n → Prop := SKIP
+
+end Polygon
+
+open Polygon
 
 end Geo
