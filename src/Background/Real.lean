@@ -17,9 +17,11 @@ noncomputable instance : HasSub ℝ := ⟨SKIP⟩
 noncomputable instance : HasDiv ℝ := ⟨SKIP⟩
 noncomputable instance : HasMod ℝ := ⟨SKIP⟩
 noncomputable instance : HasPi ℝ := ⟨SKIP⟩
+noncomputable instance : HasPow ℝ Nat := ⟨SKIP⟩
 noncomputable instance : HasLess ℝ := ⟨SKIP⟩
 noncomputable instance : HasLessEq ℝ := ⟨SKIP⟩
 
+noncomputable def sqrt : ℝ → ℝ := SKIP
 end Real
 
 def PReal : Type := { x : ℝ // x > 0 }
@@ -36,6 +38,7 @@ noncomputable instance : HasSub ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasDiv ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasMod ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasPi ℝ₊ := ⟨SKIP⟩
+noncomputable instance : HasPow ℝ₊ Nat := ⟨SKIP⟩
 noncomputable instance : HasLess ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasLessEq ℝ₊ := ⟨SKIP⟩
 
@@ -55,6 +58,7 @@ noncomputable instance : HasSub ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasDiv ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasMod ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasPi ℝ≥ := ⟨SKIP⟩
+noncomputable instance : HasPow ℝ≥ Nat := ⟨SKIP⟩
 noncomputable instance : HasLess ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasLessEq ℝ≥ := ⟨SKIP⟩
 

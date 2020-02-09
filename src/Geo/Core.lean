@@ -3,6 +3,7 @@ import Geo.Background.List
 import Geo.Background.Vec
 import Geo.Background.Set
 import Geo.Background.Tuple
+import Geo.Geo.Analytic
 
 /-
 Currently, we do not require NDGs in the constructions.
@@ -14,8 +15,6 @@ but so far the other typeclasses have mostly just preempted the ⟨⟩ notation 
 -/
 
 namespace Geo
-
-structure Point : Type := (x y : ℝ)
 
 class HasOn (α : Type) := (on : Point → α → Prop)
 def on {α : Type} [HasOn α] : Point → α → Prop := HasOn.on
@@ -54,9 +53,14 @@ structure Line : Type := (p₁ p₂ : Point)
 
 namespace Line
 
-protected def on (p : Point) (l : Line) : Prop := SKIP -- ARITH
+def wf : Line → Prop
+| ⟨a, b⟩ => a ≠ b
+
+protected def on (p : Point) : Line → Prop
+| ⟨a, b⟩ => a ≠ b ∧ Analytic.coll p a b -- TODO: bundle NDGs like this?
 
 instance : HasOn Line := ⟨Line.on⟩
+
 noncomputable def reflectPL (p : Point) (l : Line) : Point := SKIP -- ARITH
 noncomputable def reflectLL (l₁ l₂ : Line) : Line := SKIP -- ARITH
 noncomputable instance ReflectPL : HasReflect Point Line := ⟨reflectPL⟩
@@ -64,12 +68,15 @@ noncomputable instance ReflectLL : HasReflect Line Line := ⟨reflectLL⟩
 
 end Line
 
-noncomputable def coll : Point → Point → Point → Prop := SKIP
+noncomputable def coll : Point → Point → Point → Prop := Analytic.coll
 noncomputable def foot (p : Point) (l : Line) : Point := SKIP -- ARITH
 noncomputable def perpTo (p q : Point) : Point := SKIP -- ARITH
 
-def para (l₁ l₂ : Line) : Prop := SKIP
-def perp (l₁ l₂ : Line) : Prop := SKIP
+def para (l₁ l₂ : Line) : Prop :=
+l₁.wf ∧ l₂.wf ∧ Analytic.para l₁.p₁ l₁.p₂ l₂.p₁ l₂.p₂
+
+def perp (l₁ l₂ : Line) : Prop :=
+l₁.wf ∧ l₂.wf ∧ Analytic.perp l₁.p₁ l₁.p₂ l₂.p₁ l₂.p₂
 
 structure Seg : Type := (src dst : Point)
 
@@ -81,10 +88,14 @@ instance : HasOn Seg := ⟨Seg.on⟩
 def toLine (l : Seg) : Line := ⟨l.src, l.dst⟩
 instance : HasCoe Seg Line := ⟨toLine⟩
 
-protected noncomputable def ulen (l : Seg) : ℝ≥ := SKIP -- ARITH
+protected noncomputable def ulen (l : Seg) : ℝ≥ :=
+⟨Analytic.dist l.src l.dst, Analytic.distGe0 _ _⟩
+
 noncomputable instance : HasLength Seg := ⟨Seg.ulen⟩
 
-protected noncomputable def midp (l : Seg) : Point := SKIP -- ARITH
+protected noncomputable def midp (l : Seg) : Point :=
+Analytic.midp l.src l.dst
+
 noncomputable instance : HasMidpoint Seg := ⟨Seg.midp⟩
 
 end Seg
@@ -95,7 +106,7 @@ structure Ray : Type := (src dst : Point)
 
 namespace Ray
 
-protected def on (p : Point) (l : Ray) : Prop := SKIP -- (on line & btw)
+protected def on (p : Point) (l : Ray) : Prop := SKIP
 instance : HasOn Ray := ⟨Ray.on⟩
 
 def toLine (l : Ray) : Line := ⟨l.src, l.dst⟩
@@ -107,13 +118,19 @@ structure Circle : Type := (origin : Point) (radius : ℝ₊)
 
 namespace Circle
 
-protected def on (p : Point) (Γ : Circle) : Prop := SKIP -- ARITH
+protected def on (p : Point) (Γ : Circle) : Prop :=
+Γ.radius = ⟨Analytic.dist p Γ.origin, Analytic.distGe0 _ _⟩
+
 instance : HasOn Circle := ⟨Circle.on⟩
 
-protected def inside (p : Point) (Γ : Circle) : Prop := SKIP -- ARITH
+protected def inside (p : Point) (Γ : Circle) : Prop :=
+Γ.radius > ⟨Analytic.dist p Γ.origin, Analytic.distGe0 _ _⟩
+
 instance : HasInside Circle := ⟨Circle.inside⟩
 
-protected noncomputable def uarea (Γ : Circle) : ℝ≥ := SKIP -- ARITH
+protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
+π * Γ.radius^2
+
 noncomputable instance : HasUnsignedArea Circle := ⟨Circle.uarea⟩
 
 end Circle
