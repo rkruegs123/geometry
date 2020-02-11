@@ -58,11 +58,15 @@ noncomputable instance : HasPi ℝ≥ := ⟨WIP⟩
 noncomputable instance : HasPow ℝ≥ Nat := ⟨WIP⟩
 noncomputable instance : HasLess ℝ≥ := ⟨WIP⟩
 noncomputable instance : HasLessEq ℝ≥ := ⟨WIP⟩
+instance : HasCoe ℝ≥ ℝ := ⟨Subtype.val⟩
 
 end NNReal
 
-def RealMod2π : Type := Quot (λ (x y : ℝ) => x % (2 * π) = y % 2 * π)
+def RealMod2πEquivalence := λ (x y : ℝ) => x % (2 * π) = y % 2 * π
+def RealMod2π : Type := Quot RealMod2πEquivalence
+-- def RealMod2π : Type := Quot (λ (x y : ℝ) => x % (2 * π) = y % 2 * π)
 notation `ℝ2π` := RealMod2π
+--instance : Setoid ℝ := EqvGen.Setoid RealMod2πEquivalence
 
 namespace RealMod2π
 
@@ -71,6 +75,9 @@ noncomputable instance : HasAdd ℝ2π := ⟨WIP⟩
 noncomputable instance : HasNeg ℝ2π := ⟨WIP⟩
 noncomputable instance : HasSub ℝ2π := ⟨WIP⟩
 noncomputable instance : HasPi ℝ2π := ⟨WIP⟩
+noncomputable instance : HasLess ℝ2π := ⟨WIP⟩
+noncomputable instance : HasLessEq ℝ2π := ⟨WIP⟩
+noncomputable instance : HasMul ℝ2π := ⟨WIP⟩ -- adding this thinking the implementation could include a final mod 2π. If not, may have to change to subtypes
 
 end RealMod2π
 

@@ -17,6 +17,8 @@ namespace Geo
 
 structure Point : Type := (x y : ℝ)
 
+noncomputable instance : Inhabited Point := Inhabited.mk ⟨0, 0⟩ -- check with daniel
+
 namespace Point
 
 noncomputable def add (p₁ p₂ : Point) : Point := ⟨p₁.x + p₂.x, p₁.y + p₂.y⟩
@@ -50,6 +52,8 @@ noncomputable def midp   : Point := ⟨a.x + b.x / 2, a.y + b.y / 2⟩
 noncomputable def coll : Prop := sarea2 a b c = 0
 noncomputable def para : Prop := (a.x - b.x) * (c.y - d.y) - (a.y - b.y) * (c.x - d.x) = 0
 noncomputable def perp : Prop := (a.x - b.x) * (c.x - d.x) + (a.y - b.y) * (c.y - d.y) = 0
+
+noncomputable def degToRadians (degrees : ℝ) : ℝ := degrees * π / 180
 
 noncomputable def eqangle : Prop :=
 sarea2 a b c * sprod d e f = sarea2 d e f * sprod a b c
