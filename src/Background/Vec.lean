@@ -47,6 +47,9 @@ def map (f : X -> Y) (xs : Vec X n) : Vec Y n :=
 def map₂ (f : X → Y → Z) (xs : Vec X n) (ys : Vec Y n) : Vec Z n :=
 ⟨ List.map₂ f xs.val ys.val, WIP ⟩
 
+def zip (xs: Vec X n) (ys : Vec Y n) : Vec (Prod X Y) n :=
+⟨ List.zip xs.val ys.val, WIP ⟩
+
 def sum [HasZero X] [HasAdd X] (xs : Vec X n) : X :=
 List.sum xs.val
 

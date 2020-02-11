@@ -23,7 +23,7 @@ noncomputable instance : HasLessEq ℝ := ⟨WIP⟩
 noncomputable def sqrt : ℝ → ℝ := WIP
 end Real
 
-def PReal : Type := { x : ℝ // x > 0 }
+abbrev PReal : Type := { x : ℝ // x > 0 }
 notation `ℝ₊` := PReal
 
 namespace PReal
@@ -42,7 +42,7 @@ noncomputable instance : HasLessEq ℝ₊ := ⟨WIP⟩
 
 end PReal
 
-def NNReal : Type := { x : ℝ // x ≥ 0 }
+abbrev NNReal : Type := { x : ℝ // x ≥ 0 }
 notation `ℝ≥` := NNReal
 
 namespace NNReal
@@ -61,27 +61,40 @@ noncomputable instance : HasLessEq ℝ≥ := ⟨WIP⟩
 
 end NNReal
 
-def RealMod2π : Type := Quot (λ (x y : ℝ) => x % (2 * π) = y % 2 * π)
+abbrev RealMod2π := { x : ℝ // x ≥ 0 ∧ x < 2 * π }
 notation `ℝ2π` := RealMod2π
 
 namespace RealMod2π
+
+-- Warning: these operations are not the same as for ℝ
 
 noncomputable instance : HasOfNat ℝ2π := ⟨WIP⟩
 noncomputable instance : HasAdd ℝ2π := ⟨WIP⟩
 noncomputable instance : HasNeg ℝ2π := ⟨WIP⟩
 noncomputable instance : HasSub ℝ2π := ⟨WIP⟩
 noncomputable instance : HasPi ℝ2π := ⟨WIP⟩
+noncomputable instance : HasLess ℝ2π := ⟨WIP⟩
+noncomputable instance : HasLessEq ℝ2π := ⟨WIP⟩
+
+noncomputable def divNat : ℝ2π → Nat → ℝ2π := WIP
 
 end RealMod2π
 
-def RealModπ : Type := Quot (λ (x y : ℝ) => x % π = y % π)
+abbrev RealModπ : Type := { x : ℝ // x ≥ 0 ∧ x < π }
+
 notation `ℝπ` := RealModπ
 
 namespace RealModπ
+
+-- Warning: these operations are not the same as for ℝ
 
 noncomputable instance : HasOfNat ℝπ := ⟨WIP⟩
 noncomputable instance : HasAdd ℝπ := ⟨WIP⟩
 noncomputable instance : HasNeg ℝπ := ⟨WIP⟩
 noncomputable instance : HasSub ℝπ := ⟨WIP⟩
+noncomputable instance : HasLess ℝπ := ⟨WIP⟩
+noncomputable instance : HasLessEq ℝπ := ⟨WIP⟩
+
+noncomputable def divNat : ℝπ → Nat → ℝπ := WIP
 
 end RealModπ

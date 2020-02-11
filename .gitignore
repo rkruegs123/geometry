@@ -1,0 +1,6 @@
+*.olean
+*.cpp
+*.o
+*.depend
+*~
+*#
