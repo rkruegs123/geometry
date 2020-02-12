@@ -8,8 +8,7 @@ notation `π` := HasPi.pi
 
 namespace Real
 
-noncomputable instance : HasZero ℝ := ⟨SKIP⟩
-noncomputable instance : HasOne ℝ := ⟨SKIP⟩
+noncomputable instance : HasOfNat ℝ := ⟨SKIP⟩
 noncomputable instance : HasAdd ℝ := ⟨SKIP⟩
 noncomputable instance : HasMul ℝ := ⟨SKIP⟩
 noncomputable instance : HasNeg ℝ := ⟨SKIP⟩
@@ -29,8 +28,7 @@ notation `ℝ₊` := PReal
 
 namespace PReal
 
-noncomputable instance : HasZero ℝ₊ := ⟨SKIP⟩
-noncomputable instance : HasOne ℝ₊ := ⟨SKIP⟩
+noncomputable instance : HasOfNat ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasAdd ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasMul ℝ₊ := ⟨SKIP⟩
 noncomputable instance : HasNeg ℝ₊ := ⟨SKIP⟩
@@ -49,8 +47,7 @@ notation `ℝ≥` := NNReal
 
 namespace NNReal
 
-noncomputable instance : HasZero ℝ≥ := ⟨SKIP⟩
-noncomputable instance : HasOne ℝ≥ := ⟨SKIP⟩
+noncomputable instance : HasOfNat ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasAdd ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasMul ℝ≥ := ⟨SKIP⟩
 noncomputable instance : HasNeg ℝ≥ := ⟨SKIP⟩
@@ -69,8 +66,7 @@ notation `ℝ2π` := RealMod2π
 
 namespace RealMod2π
 
-noncomputable instance : HasZero ℝ2π := ⟨SKIP⟩
-noncomputable instance : HasOne ℝ2π := ⟨SKIP⟩
+noncomputable instance : HasOfNat ℝ2π := ⟨SKIP⟩
 noncomputable instance : HasAdd ℝ2π := ⟨SKIP⟩
 noncomputable instance : HasNeg ℝ2π := ⟨SKIP⟩
 noncomputable instance : HasSub ℝ2π := ⟨SKIP⟩
@@ -83,8 +79,7 @@ notation `ℝπ` := RealModπ
 
 namespace RealModπ
 
-noncomputable instance : HasZero ℝπ := ⟨SKIP⟩
-noncomputable instance : HasOne ℝπ := ⟨SKIP⟩
+noncomputable instance : HasOfNat ℝπ := ⟨SKIP⟩
 noncomputable instance : HasAdd ℝπ := ⟨SKIP⟩
 noncomputable instance : HasNeg ℝπ := ⟨SKIP⟩
 noncomputable instance : HasSub ℝπ := ⟨SKIP⟩
