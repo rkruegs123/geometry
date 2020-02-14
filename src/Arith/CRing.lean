@@ -45,6 +45,18 @@ inductive CRExpr : Type
 
 namespace CRExpr
 
+def hasBeq : CRExpr → CRExpr → Bool
+| atom x₁,   atom x₂   => x₁ == x₂
+| nat n₁,    nat n₂    => n₁ == n₂
+| add x₁ y₁, add x₂ y₂ => hasBeq x₁ x₂ && hasBeq y₁ y₂
+| mul x₁ y₁, mul x₂ y₂ => hasBeq x₁ x₂ && hasBeq y₁ y₂
+| sub x₁ y₁, sub x₂ y₂ => hasBeq x₁ x₂ && hasBeq y₁ y₂
+| neg x₁,    neg x₂    => hasBeq x₁ x₂
+| pow x₁ k₁, pow x₂ k₂ => hasBeq x₁ x₂ && k₁ == k₂
+| _,         _         => false
+
+instance : HasBeq CRExpr := ⟨hasBeq⟩
+
 def hasToString : CRExpr → String
 | atom x => "#" ++ toString x
 | nat n  => toString n
@@ -74,21 +86,8 @@ def denote {α : Type u} [CRing α] (xs : Array α) : CRExpr → α
 
 end CRExpr
 
-structure Atom := (atom : Nat)
-namespace Atom
-instance : HasOfNat Atom := ⟨Atom.mk⟩
-instance : HasToString Atom := ⟨λ ⟨x⟩ => toString x⟩
-instance : HasBeq Atom := ⟨λ ⟨x₁⟩ ⟨x₂⟩ => x₁ == x₂⟩
-end Atom
-
-structure Power := (power : Nat)
-namespace Power
-instance : HasOfNat Power := ⟨Power.mk⟩
-instance : HasToString Power := ⟨λ ⟨k⟩ => toString k⟩
-instance : HasBeq Power := ⟨λ ⟨k₁⟩ ⟨k₂⟩ => k₁ == k₂⟩
-instance : HasAdd Power := ⟨λ k₁ k₂ => ⟨k₁.power + k₂.power⟩⟩
-instance : HasSub Power := ⟨λ k₁ k₂ => ⟨k₁.power - k₂.power⟩⟩
-end Power
+abbrev Atom := Nat
+abbrev Power := Nat
 
 -- Horner expressions
 -- Note: care must be taken to maintain "canonical forms"
@@ -114,7 +113,7 @@ def hasBeq : HExpr → HExpr → Bool
 
 instance : HasBeq HExpr := ⟨hasBeq⟩
 
-def atom (x : Atom) : HExpr := hornerAux 1 x ⟨1⟩ 0
+def atom (x : Atom) : HExpr := hornerAux 1 x 1 0
 
 -- Constructor that maintains canonical form.
 def horner (a : HExpr) (x : Atom) (k : Power) (b : HExpr) : HExpr :=
@@ -122,7 +121,7 @@ match a with
 | int c                 =>
   if c = 0 then b else hornerAux a x k b
 | hornerAux a₁ x₁ k₁ b₁ =>
-  if x₁.atom = x.atom ∧ b₁ == 0 then hornerAux a₁ x (k₁ + k) b else hornerAux a x k b
+  if x₁ = x ∧ b₁ == 0 then hornerAux a₁ x (k₁ + k) b else hornerAux a x k b
 
 /-
 -- The "correct" version, but the compiler can't find "recOn"
@@ -144,12 +143,13 @@ def addConst (c₁ : Int) (e₂ : HExpr) : HExpr :=
 addConstCore c₁ 10000 e₂
 
 def addAux (a₁ : HExpr) (addA₁ : HExpr → HExpr) (x₁ : Atom) : HExpr → Power → HExpr → (HExpr → HExpr) → HExpr
-| int c₂,                k₁, b₁, ϕ => addConst c₂ (hornerAux a₁ x₁ k₁ b₁)
+| int c₂,                     k₁, b₁, ϕ =>
+  addConst c₂ (hornerAux a₁ x₁ k₁ b₁)
 | e₂@(hornerAux a₂ x₂ k₂ b₂), k₁, b₁, ϕ =>
-  if x₁.atom < x₂.atom then hornerAux a₁ x₁ k₁ (ϕ e₂)
-  else if x₂.atom < x₁.atom then hornerAux a₂ x₂ k₂ (addAux b₂ k₁ b₁ ϕ)
-  else if k₁.power < k₂.power then hornerAux (addA₁ $ hornerAux a₂ x₁ (k₂ - k₁) 0) x₁ k₁ (ϕ b₂)
-  else if k₂.power < k₁.power then hornerAux (addAux a₂ (k₁ - k₂) 0 id) x₁ k₂ (ϕ b₂)
+  if x₁ < x₂ then hornerAux a₁ x₁ k₁ (ϕ e₂)
+  else if x₂ < x₁ then hornerAux a₂ x₂ k₂ (addAux b₂ k₁ b₁ ϕ)
+  else if k₁ < k₂ then hornerAux (addA₁ $ hornerAux a₂ x₁ (k₂ - k₁) 0) x₁ k₁ (ϕ b₂)
+  else if k₂ < k₁ then hornerAux (addAux a₂ (k₁ - k₂) 0 id) x₁ k₂ (ϕ b₂)
   else horner (addA₁ a₂) x₁ k₁ (ϕ b₂)
 
 def add : HExpr → HExpr → HExpr
@@ -189,8 +189,8 @@ mulConstCore c₁ 10000 e₂
 def mulAux (a₁ : HExpr) (x₁ : Atom) (k₁ : Power) (b₁ : HExpr) (mulA₁ mulB₁ : HExpr → HExpr) : HExpr → HExpr
 | int k₂ => mulConst k₂ (horner a₁ x₁ k₁ b₁)
 | e₂@(hornerAux a₂ x₂ k₂ b₂) =>
-  if x₁.atom < x₂.atom then horner (mulA₁ e₂) x₁ k₁ (mulB₁ e₂)
-  else if x₂.atom < x₁.atom then horner (mulAux a₂) x₂ k₂ (mulAux b₂)
+  if x₁ < x₂ then horner (mulA₁ e₂) x₁ k₁ (mulB₁ e₂)
+  else if x₂ < x₁ then horner (mulAux a₂) x₂ k₂ (mulAux b₂)
   else
     let t : HExpr := horner (mulAux a₂) x₁ k₂ 0;
     if b₂ == 0 then t else t + horner (mulA₁ b₂) x₁ k₁ (mulB₁ b₂)
@@ -213,7 +213,7 @@ end HExpr
 namespace CRExpr
 
 def toHExpr : CRExpr → HExpr
-| atom x => HExpr.atom ⟨x⟩
+| atom x => HExpr.atom x
 | nat n  => HExpr.int n
 | add x y => x.toHExpr + y.toHExpr
 | sub x y => x.toHExpr + - y.toHExpr
@@ -227,7 +227,7 @@ namespace HExpr
 
 def denote {α : Type u} [CRing α] (xs : Array α) : HExpr → α
 | HExpr.int n                 => if n ≥ 0 then ofNat α n.natAbs else - (ofNat α $ n.natAbs)
-| HExpr.hornerAux a ⟨x⟩ ⟨k⟩ b => a.denote * (xs.get! x)^k + b.denote
+| HExpr.hornerAux a x k b => a.denote * (xs.get! x)^k + b.denote
 
 -- TODO: this theorem is not true until we either restore primitive recursion
 -- or switch to returning an Option.
