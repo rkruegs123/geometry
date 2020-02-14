@@ -12,6 +12,7 @@ import Init.Data.Int
 import Init.Data.Array
 import Init.Control.EState
 import Geo.Util
+import Geo.Background.Array
 import Geo.Arith.CRing
 
 namespace Arith
@@ -78,12 +79,22 @@ def denote {α : Type u} [Field α] (xs : Array α) : FExpr → α
 end FExpr
 
 structure FieldNF : Type :=
-(numer      : CRExpr := 1)
+(numer      : CRExpr)
 (denom      : CRExpr := 1)
 (conditions : Array CRExpr := #[])
 
--- TODO: temporary, to support the partial
-instance FieldNFInhabited : Inhabited FieldNF := ⟨{}⟩
+namespace FieldNF
+
+variables {α : Type u} [Field α]
+
+def denote (xs : Array α) (nf : FieldNF) : α :=
+(nf.numer.denote xs) / (nf.denom.denote xs)
+
+def denoteConditions (xs : Array α) (nf : FieldNF) : Prop :=
+nf.conditions.allP (λ c => c.denote xs ≠ 0)
+
+instance : Inhabited FieldNF := ⟨{ numer := 1 }⟩
+end FieldNF
 
 namespace Normalize
 
@@ -99,10 +110,10 @@ private def defaultIsIn : CRExpr → Nat → CRExpr → Nat → Option (Nat × C
   else
     none
 
-/-
-If this returns (k₃, p₃),
-then k₃ < k₁, and p₂^k₂ = p₁^(k₁-k₃) * p₃
--/
+theorem defaultIsInOk (p₁ p₂ p₃ : CRExpr) (k₁ k₂ k₃ : Nat) :
+  defaultIsIn p₁ k₁ p₂ k₂ = some (k₃, p₃) → CRExpr.denotationsEq (p₂^k₂) (p₁^(k₁ - k₃) * p₃) ∧ k₃ < k₁ :=
+WIP
+
 private def isIn : CRExpr → Nat → CRExpr → Nat → Option (Nat × CRExpr)
 | p₁, k₁, CRExpr.mul p₃ p₄, k₂ =>
   match isIn p₁ k₁ p₃ k₂ with
@@ -118,6 +129,11 @@ private def isIn : CRExpr → Nat → CRExpr → Nat → Option (Nat × CRExpr)
 | p₁, k₁, CRExpr.pow p₃ 0, k₂ => none
 | p₁, k₁, CRExpr.pow p₃ k₃, k₂ => isIn p₁ k₁ p₃ (k₂ * k₃)
 | p₁, k₁, p₂, k₂ => defaultIsIn p₁ k₁ p₂ k₂
+
+
+theorem isInOk (p₁ p₂ p₃ : CRExpr) (k₁ k₂ k₃: Nat) :
+  isIn p₁ k₁ p₂ k₂ = some (k₃, p₃) → CRExpr.denotationsEq (p₂^k₂) (p₁^(k₁ - k₃) * p₃) :=
+WIP
 
 structure Split : Type :=
 (left common right : CRExpr)
@@ -140,11 +156,15 @@ private def splitAux : CRExpr → Nat → CRExpr → Split
   | some (k₁, p₃) => ⟨p₁^k₁, p₁^(k-k₁), p₃⟩
   | none          => ⟨p₁^k, 1, p₂⟩
 
-/-
-let s := split p₁ p₂;
-p₁ = s.left * s.common ∧ p₂ = s.right * s.common
--/
 private def split (p₁ p₂ : CRExpr) : Split := splitAux p₁ 1 p₂
+
+theorem splitOk (p₁ p₂ : CRExpr) :
+  let s := split p₁ p₂;
+  CRExpr.denotationsEq p₁ (s.left * s.common)
+  ∧ CRExpr.denotationsEq p₂ (s.right * s.common)
+  ∧ p₁ ≠ 0 → s.left ≠ 0
+  ∧ p₂ ≠ 0 → s.right ≠ 0 :=
+WIP
 
 partial def norm : FExpr → FieldNF
 | atom x  => { numer := CRExpr.atom x }
@@ -170,8 +190,19 @@ partial def norm : FExpr → FieldNF
 | div x y => norm (x * FExpr.inv y)
 | pow x k => let x := norm x; { numer := x.numer^k, denom := x.denom^k, .. x }
 
+
+theorem normOk {α : Type u} [Field α] (xs : Array α) (e : FExpr) :
+  (norm e).denoteConditions xs → (norm e).denote xs = e.denote xs :=
+WIP
+
 end Normalize
 
 def FExpr.norm : FExpr → FieldNF := @Normalize.norm
+
+theorem FieldCorrect {α : Type u} [Field α] (xs : Array α) (e₁ e₂ : FExpr) :
+  e₁.norm.denoteConditions xs →
+  e₂.norm.denoteConditions xs →
+  e₁.norm = e₂.norm → e₁.denote xs = e₂.denote xs :=
+WIP
 
 end Arith

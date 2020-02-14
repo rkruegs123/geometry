@@ -61,16 +61,16 @@ protected def on (p : Point) : Line → Prop
 
 instance : HasOn Line := ⟨Line.on⟩
 
-noncomputable def reflectPL (p : Point) (l : Line) : Point := SKIP -- ARITH
-noncomputable def reflectLL (l₁ l₂ : Line) : Line := SKIP -- ARITH
+noncomputable def reflectPL (p : Point) (l : Line) : Point := WIP -- ARITH
+noncomputable def reflectLL (l₁ l₂ : Line) : Line := WIP -- ARITH
 noncomputable instance ReflectPL : HasReflect Point Line := ⟨reflectPL⟩
 noncomputable instance ReflectLL : HasReflect Line Line := ⟨reflectLL⟩
 
 end Line
 
 noncomputable def coll : Point → Point → Point → Prop := Analytic.coll
-noncomputable def foot (p : Point) (l : Line) : Point := SKIP -- ARITH
-noncomputable def perpTo (p q : Point) : Point := SKIP -- ARITH
+noncomputable def foot (p : Point) (l : Line) : Point := WIP -- ARITH
+noncomputable def perpTo (p q : Point) : Point := WIP -- ARITH
 
 def para (l₁ l₂ : Line) : Prop :=
 l₁.wf ∧ l₂.wf ∧ Analytic.para l₁.p₁ l₁.p₂ l₂.p₁ l₂.p₂
@@ -82,7 +82,7 @@ structure Seg : Type := (src dst : Point)
 
 namespace Seg
 
-protected def on (p : Point) (l : Seg) : Prop := SKIP -- (on line & btw)
+protected def on (p : Point) (l : Seg) : Prop := WIP -- (on line & btw)
 instance : HasOn Seg := ⟨Seg.on⟩
 
 def toLine (l : Seg) : Line := ⟨l.src, l.dst⟩
@@ -106,7 +106,7 @@ structure Ray : Type := (src dst : Point)
 
 namespace Ray
 
-protected def on (p : Point) (l : Ray) : Prop := SKIP
+protected def on (p : Point) (l : Ray) : Prop := WIP
 instance : HasOn Ray := ⟨Ray.on⟩
 
 def toLine (l : Ray) : Line := ⟨l.src, l.dst⟩
@@ -144,13 +144,13 @@ namespace Arc
 
 variable {Γ : Circle}
 
-protected def on (p : Point) (arc : Arc Γ) : Prop := SKIP -- ARITH
+protected def on (p : Point) (arc : Arc Γ) : Prop := WIP -- ARITH
 instance: HasOn (Arc Γ) := ⟨Arc.on⟩
 
-protected noncomputable def ulen (arc : Arc Γ) : ℝ≥ := SKIP -- ARITH
+protected noncomputable def ulen (arc : Arc Γ) : ℝ≥ := WIP -- ARITH
 noncomputable instance : HasLength (Arc Γ) := ⟨Arc.ulen⟩
 
-protected noncomputable def midp (arc : Arc Γ) : Point := SKIP -- ARITH
+protected noncomputable def midp (arc : Arc Γ) : Point := WIP -- ARITH
 noncomputable instance : HasMidpoint (Arc Γ) := ⟨Arc.midp⟩
 
 end Arc
@@ -161,23 +161,23 @@ open Triple (cmap any all)
 
 def Angle : Type := Triple Point
 
-noncomputable def uangle : Angle → ℝ2π := SKIP
-noncomputable def dangle : Angle → ℝπ  := SKIP
+noncomputable def uangle : Angle → ℝ2π := WIP
+noncomputable def dangle : Angle → ℝπ  := WIP
 
 def Triangle : Type := Triple Point
 
 namespace Triangle
 
-protected def on : Point → Triangle → Prop := SKIP
+protected def on : Point → Triangle → Prop := WIP
 instance : HasOn Triangle := ⟨Triangle.on⟩
 
-protected def inside : Point → Triangle → Prop := SKIP
+protected def inside : Point → Triangle → Prop := WIP
 instance : HasInside Triangle := ⟨Triangle.inside⟩
 
-protected noncomputable def uarea : Triangle → ℝ₊ := SKIP
+protected noncomputable def uarea : Triangle → ℝ₊ := WIP
 noncomputable instance : HasUnsignedArea Triangle := ⟨Triangle.uarea⟩
 
-protected noncomputable def sarea : Triangle → ℝ := SKIP
+protected noncomputable def sarea : Triangle → ℝ := WIP
 noncomputable instance : HasSignedArea Triangle := ⟨Triangle.sarea⟩
 
 def sides : Triangle → Triple Seg
@@ -204,21 +204,21 @@ cmap $ λ tri => ⟨tri.A, foot tri.A ⟨tri.B, tri.C⟩⟩
 noncomputable def medians : Triangle → Triple Line :=
 cmap $ λ tri => ⟨tri.A, midp (Seg.mk tri.B tri.C)⟩
 
-noncomputable def circumcenter  : Triangle → Point := SKIP
-noncomputable def incenter      : Triangle → Point := SKIP
-noncomputable def orthocenter   : Triangle → Point := SKIP
-noncomputable def centroid      : Triangle → Point := SKIP
-noncomputable def excenters     : Triangle → Triple Point := SKIP
+noncomputable def circumcenter  : Triangle → Point := WIP
+noncomputable def incenter      : Triangle → Point := WIP
+noncomputable def orthocenter   : Triangle → Point := WIP
+noncomputable def centroid      : Triangle → Point := WIP
+noncomputable def excenters     : Triangle → Triple Point := WIP
 
-noncomputable def circumcircle  : Triangle → Circle := SKIP
-noncomputable def incircle      : Triangle → Circle := SKIP
-noncomputable def excircles     : Triangle → Triple Circle := SKIP
+noncomputable def circumcircle  : Triangle → Circle := WIP
+noncomputable def incircle      : Triangle → Circle := WIP
+noncomputable def excircles     : Triangle → Triple Circle := WIP
 
-noncomputable def circumradius   : Triangle → ℝ₊ := SKIP
-noncomputable def inradius       : Triangle → ℝ₊ := SKIP
-noncomputable def exradii        : Triangle → Triple ℝ₊ := SKIP
+noncomputable def circumradius   : Triangle → ℝ₊ := WIP
+noncomputable def inradius       : Triangle → ℝ₊ := WIP
+noncomputable def exradii        : Triangle → Triple ℝ₊ := WIP
 
-noncomputable def pedalTriangle  : Triangle → Point → Triangle := SKIP
+noncomputable def pedalTriangle  : Triangle → Point → Triangle := WIP
 
 noncomputable def orthicTriangle (tri : Triangle) : Triangle :=
 pedalTriangle tri tri.orthocenter
@@ -226,15 +226,15 @@ pedalTriangle tri tri.orthocenter
 noncomputable def medialTriangle (tri : Triangle) : Triangle :=
 pedalTriangle tri tri.circumcenter
 
-noncomputable def ceviansThrough (tri : Triangle) (p : Point) : Triple Line := SKIP
+noncomputable def ceviansThrough (tri : Triangle) (p : Point) : Triple Line := WIP
 
 -- Awkward
 def cevian (tri : Triangle) (l : Seg) : Prop :=
 any (λ (tri : Triangle) => tri.A = l.src ∧ on l.dst tri.esides.A) tri.cycles
 
-def acute (tri : Triangle)     : Prop := SKIP
-def scalene (tri : Triangle)   : Prop := SKIP
-def isosceles (tri : Triangle) : Prop := SKIP
+def acute (tri : Triangle)     : Prop := WIP
+def scalene (tri : Triangle)   : Prop := WIP
+def isosceles (tri : Triangle) : Prop := WIP
 
 end Triangle
 
@@ -244,16 +244,16 @@ def Quadrilateral : Type := Quadruple Point
 
 namespace Quadrilateral
 
-protected def on : Point → Quadrilateral → Prop := SKIP
+protected def on : Point → Quadrilateral → Prop := WIP
 instance : HasOn Quadrilateral := ⟨Quadrilateral.on⟩
 
-protected def inside : Point → Quadrilateral → Prop := SKIP
+protected def inside : Point → Quadrilateral → Prop := WIP
 instance : HasInside Quadrilateral := ⟨Quadrilateral.inside⟩
 
-protected noncomputable def uarea : Quadrilateral → ℝ₊ := SKIP
+protected noncomputable def uarea : Quadrilateral → ℝ₊ := WIP
 noncomputable instance : HasUnsignedArea Quadrilateral := ⟨Quadrilateral.uarea⟩
 
-protected noncomputable def sarea : Quadrilateral → ℝ := SKIP
+protected noncomputable def sarea : Quadrilateral → ℝ := WIP
 noncomputable instance : HasSignedArea Quadrilateral := ⟨Quadrilateral.sarea⟩
 
 def sides : Quadrilateral → Quadruple Seg
@@ -274,9 +274,9 @@ uangle <$> quad.angles
 noncomputable def dangles (quad : Quadrilateral) : Quadruple ℝπ  :=
 dangle <$> quad.angles
 
-def convex   : Quadrilateral → Prop := SKIP
-def regular  : Quadrilateral → Prop := SKIP
-def harmonic : Quadrilateral → Prop := SKIP
+def convex   : Quadrilateral → Prop := WIP
+def regular  : Quadrilateral → Prop := WIP
+def harmonic : Quadrilateral → Prop := WIP
 
 def parallelogram (quad : Quadrilateral) : Prop :=
 convex quad ∧ para quad.esides.A quad.esides.C ∧ para quad.esides.B quad.esides.D
@@ -298,13 +298,13 @@ namespace Polygon
 variables {n : Nat}
 
 def vertices (pgon : Polygon n) : Vec Point n := pgon.ps
-noncomputable def sides (pgon : Polygon n)  : Vec Seg n := SKIP
-noncomputable def sideLengths (pgon : Polygon n)  : Vec ℝ≥ n := SKIP
-noncomputable def esides (pgon : Polygon n) : Vec Line n := SKIP
-noncomputable def angles (pgon : Polygon n) : Vec Angle n := SKIP
+noncomputable def sides (pgon : Polygon n)  : Vec Seg n := WIP
+noncomputable def sideLengths (pgon : Polygon n)  : Vec ℝ≥ n := WIP
+noncomputable def esides (pgon : Polygon n) : Vec Line n := WIP
+noncomputable def angles (pgon : Polygon n) : Vec Angle n := WIP
 
-def convex : Polygon n → Prop := SKIP
-def regular : Polygon n → Prop := SKIP
+def convex : Polygon n → Prop := WIP
+def regular : Polygon n → Prop := WIP
 
 end Polygon
 

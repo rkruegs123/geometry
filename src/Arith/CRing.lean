@@ -84,6 +84,10 @@ def denote {α : Type u} [CRing α] (xs : Array α) : CRExpr → α
 | pow x k => (denote x)^k
 | neg x   => - (denote x)
 
+-- TODO: consistent naming
+def denotationsEq (e₁ e₂ : CRExpr) : Prop :=
+∀ {α : Type u} [CRing α] (xs : Array α), e₁.denote xs = e₂.denote xs
+
 end CRExpr
 
 abbrev Atom := Nat
@@ -236,7 +240,7 @@ axiom denoteCommutes {α : Type u} [CRing α] (xs : Array α) :
 
 end HExpr
 
-axiom HCorrect (α : Type u) [CRing α] (xs : Array α) (r₁ r₂ : CRExpr) :
-  r₁.toHExpr = r₂.toHExpr → r₁.denote xs = r₂.denote xs
+theorem CRingCorrect (r₁ r₂ : CRExpr) : r₁.toHExpr = r₂.toHExpr → CRExpr.denotationsEq r₁ r₂ :=
+WIP
 
 end Arith

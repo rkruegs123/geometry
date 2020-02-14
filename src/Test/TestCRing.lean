@@ -2,6 +2,7 @@ import Geo.Arith.CRing
 import Geo.Background.Real
 
 namespace Arith
+namespace CRing
 namespace Test
 
 open HExpr (horner hornerAux int)
@@ -42,4 +43,5 @@ else throw $ IO.userError (toString cr.toHExpr ++ " ≠ 0")
 #eval check0 $ x - - y - x - y
 
 end Test
+end CRing
 end Arith

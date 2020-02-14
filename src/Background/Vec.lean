@@ -13,10 +13,10 @@ variables {X Y Z : Type} {n n₁ n₂ : Nat}
 axiom get : Vec X n → Fin n → X
 
 -- TODO(dselsam): unsound
-noncomputable def get₀ (v : Vec X n) : X := v.get ⟨0, SORRY⟩
-noncomputable def get₁ (v : Vec X n) : X := v.get ⟨1, SORRY⟩
-noncomputable def get₂ (v : Vec X n) : X := v.get ⟨2, SORRY⟩
-noncomputable def get₃ (v : Vec X n) : X := v.get ⟨3, SORRY⟩
+noncomputable def get₀ (v : Vec X n) : X := v.get ⟨0, WIP⟩
+noncomputable def get₁ (v : Vec X n) : X := v.get ⟨1, WIP⟩
+noncomputable def get₂ (v : Vec X n) : X := v.get ⟨2, WIP⟩
+noncomputable def get₃ (v : Vec X n) : X := v.get ⟨3, WIP⟩
 
 axiom fromFunc (f : Fin n → X) : Vec X n
 
@@ -30,22 +30,22 @@ def empty : Vec X 0 :=
 ⟨ [], rfl ⟩
 
 def take (k : Fin n) (xs : Vec X n) : Vec X k.val :=
-⟨ xs.val.take k.val, SORRY ⟩
+⟨ xs.val.take k.val, WIP ⟩
 
 def drop (k : Fin n) (xs : Vec X n) : Vec X (n - k.val) :=
-⟨ xs.val.drop k.val, SORRY ⟩
+⟨ xs.val.drop k.val, WIP ⟩
 
 def append (xs₁ : Vec X n₁) (xs₂ : Vec X n₂) : Vec X (n₁ + n₂) :=
-⟨ xs₁.val ++ xs₂.val, SORRY ⟩
+⟨ xs₁.val ++ xs₂.val, WIP ⟩
 
 def range (n : Nat) : Vec (Fin n) n :=
-⟨ List.rangeFin n, SORRY ⟩
+⟨ List.rangeFin n, WIP ⟩
 
 def map (f : X -> Y) (xs : Vec X n) : Vec Y n :=
-⟨ List.map f xs.val, SORRY ⟩
+⟨ List.map f xs.val, WIP ⟩
 
 def map₂ (f : X → Y → Z) (xs : Vec X n) (ys : Vec Y n) : Vec Z n :=
-⟨ List.map₂ f xs.val ys.val, SORRY ⟩
+⟨ List.map₂ f xs.val ys.val, WIP ⟩
 
 def sum [HasZero X] [HasAdd X] (xs : Vec X n) : X :=
 List.sum xs.val
@@ -54,13 +54,13 @@ def prod [HasOne X] [HasMul X] (xs : Vec X n) : X :=
 List.prod xs.val
 
 def cycle (k : Fin n) (xs : Vec X n) : Vec X n :=
-cast SORRY ((xs.drop k).append (xs.take k))
+cast WIP ((xs.drop k).append (xs.take k))
 
 def cycle₁ (xs : Vec X n) : Vec X n :=
-cast SORRY ((xs.drop ⟨1, SORRY⟩).append (xs.take ⟨1, SORRY⟩))
+cast WIP ((xs.drop ⟨1, WIP⟩).append (xs.take ⟨1, WIP⟩))
 
 def cycle₂ (xs : Vec X n) : Vec X n :=
-cast SORRY ((xs.drop ⟨2, SORRY⟩).append (xs.take ⟨2, SORRY⟩))
+cast WIP ((xs.drop ⟨2, WIP⟩).append (xs.take ⟨2, WIP⟩))
 
 def cycles (xs : Vec X n) : Vec (Vec X n) n :=
 (range n).map (λ (k : Fin n) => cycle k xs)
@@ -69,12 +69,12 @@ def cyclicSum [HasZero Y] [HasAdd Y] (xs : Vec X n) (f : Vec X n → Y) : Y :=
 (xs.cycles.map f).sum
 
 def subvecs (k : Fin n) (xs : Vec X n) : Vec (Vec X k.val) (n.choose k) :=
-cast SORRY (xs.val.sublists k.val)
+cast WIP (xs.val.sublists k.val)
 
 axiom mapReducePairs (f : X → X → Y) (xs : Vec X n) : Vec Y n
 
 def replicate (n : Nat) (x : X) : Vec X n :=
-⟨ List.replicate n x, SORRY ⟩
+⟨ List.replicate n x, WIP ⟩
 
 axiom mem : Vec X n → X → Prop
 axiom hasSubvec {k : Nat} : Vec X n → Vec X k → Prop

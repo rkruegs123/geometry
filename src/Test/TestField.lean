@@ -3,6 +3,7 @@ import Geo.Arith.Field
 import Geo.Background.Real
 
 namespace Arith
+namespace Field
 namespace Test
 
 open FExpr
@@ -63,4 +64,5 @@ else throw $ IO.userError (toString fe.norm.numer.toHExpr ++ " = 0")
 #eval checkF $ x / (x + y) * (x / (x + (y + z)))
 
 end Test
+end Field
 end Arith
