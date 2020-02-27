@@ -25,11 +25,8 @@ def inOrderOn {α : Type} [HasInOrderOn α] : List Point → α → Prop := HasI
 section
 variables {α β : Type} [HasOn α] [HasOn β]
 
-def allOn (x : α) : Set (List Point) := λ ps => ps.allP (λ p => on p x)
-
 def intersectAt (x : α) (y : β) : Set Point := λ p => on p x ∧ on p y
-def intersectAt₂ (x : α) (y : β) (p avoid : Point) : Prop := intersectAt x y p ∧ p ≠ avoid
-def intersectAtAll (x : α) (y : β) : Set (List Point) := λ ps => ps.allP (λ p => intersectAt x y p)
+def intersectAt₂ (x : α) (y : β) (p₁ p₂ : Point) : Prop := intersectAt x y p₁ ∧ intersectAt x y p₂ ∧ p₁ ≠ p₂
 def intersect (x : α) (y : β) : Prop := Exists (intersectAt x y)
 def allIntersectAt (xs : List α) : Set Point := λ p => xs.allP (on p)
 def allIntersect (xs : List α) : Prop := Exists (allIntersectAt xs)
@@ -40,6 +37,13 @@ def tangent (x : α) (y : β) : Prop := Exists (tangentAt x y)
 -- ryankrue: note that this is ordered (e.g., the second element is the second point of intersection)
 noncomputable def intersectionPoints (x : α) (y : β) : List Point := WIP
 noncomputable def numIntersections (x : α) (y : β) : Nat := (intersectionPoints x y).length
+
+namespace Utilities
+
+def allOn (x : α) (ps : List Point) : Prop := ps.allP (flip on x)
+def intersectAtAll (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
+
+end Utilities
 
 end
 
@@ -60,9 +64,6 @@ def ulen {α : Type} [HasLength α] : α → ℝ≥ := HasLength.ulen
 
 class HasMidpoint (α : Type) := (midp : α → Point)
 def midp {α : Type} [HasMidpoint α] : α → Point := HasMidpoint.midp
-
-class HasCongruent (α : Type) := (cong : α → α → Prop)
-def cong {α : Type} [HasCongruent α] : α → α → Prop := HasCongruent.cong
 
 structure Line : Type := (p₁ p₂ : Point)
 
@@ -121,7 +122,6 @@ Analytic.midp l.src l.dst
 noncomputable instance : HasMidpoint Seg := ⟨Seg.midp⟩
 
 def cong (l₁ l₂ : Seg) : Prop := ulen l₁ = ulen l₂
-instance : HasCongruent Seg := ⟨Seg.cong⟩
 
 end Seg
 
@@ -159,6 +159,8 @@ protected def inside (p : Point) (Γ : Circle) : Prop :=
 instance : HasInside Circle := ⟨Circle.inside⟩
 
 noncomputable def diameter (Γ : Circle) : ℝ₊ := Γ.radius * 2
+def isDiameter (p₁ p₂ : Point) (Γ : Circle) : Prop :=
+on p₁ Γ ∧ on p₂ Γ ∧ ulen (Seg.mk p₁ p₂) = Γ.diameter
 
 protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 π * Γ.radius^2
@@ -166,7 +168,7 @@ protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 noncomputable instance : HasUnsignedArea Circle := ⟨Circle.uarea⟩
 
 noncomputable def lineTangentAtP (Γ : Circle) (p : Point) : Line := WIP
-def lineTangentAtP₂ (c : Circle) (p : Point) := on p c → Line
+noncomputable def lineTangentAtP₂ (c : Circle) (p : Point) : on p c → Line := WIP
 noncomputable def lineTangentAtP₃ (O P : Point) : Line := WIP
 
 protected noncomputable def buildOP (origin p : Point) : Circle := WIP
@@ -209,12 +211,13 @@ open Triple (cmap any all)
 
 def Angle : Type := Triple Point
 
-namespace Angle
-
 noncomputable def uangle : Angle → ℝ2π := WIP
 noncomputable def dangle : Angle → ℝπ  := WIP
 
+namespace Angle
+
 noncomputable def bisector : Angle → Line := WIP
+def isBisector (l : Line) (ang : Angle) : Prop := WIP 
 
 def isRight : Angle → Prop := WIP
 
