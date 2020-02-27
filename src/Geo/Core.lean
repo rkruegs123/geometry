@@ -41,7 +41,7 @@ noncomputable def numIntersections (x : α) (y : β) : Nat := (intersectionPoint
 namespace Utilities
 
 def allOn (x : α) (ps : List Point) : Prop := ps.allP (flip on x)
-def intersectAtAll (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
+def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
 
 end Utilities
 
@@ -180,7 +180,7 @@ noncomputable def commonExtTangents (Γ₁ Γ₂ : Circle) : List Line := WIP
 end Circle
 
 noncomputable def cycl (ps : List Point) : Prop :=
-Exists (λ (Γ : Circle) => allOn Γ ps)
+Exists (λ (Γ : Circle) => Utilities.allOn Γ ps)
 
 structure Arc (Γ : Circle) : Type := (src dst avoid : Point)
 
@@ -265,10 +265,10 @@ def isRight (tri : Triangle) : Prop :=
 Triple.any Angle.isRight tri.angles
 
 noncomputable def uangles (tri : Triangle) : Triple ℝ2π :=
-Angle.uangle <$> tri.angles
+uangle <$> tri.angles
 
 noncomputable def dangles (tri : Triangle) : Triple ℝπ  :=
-Angle.dangle <$> tri.angles
+dangle <$> tri.angles
 
 noncomputable def altitudes : Triangle → Triple Line :=
 cmap $ λ tri => ⟨tri.A, foot tri.A ⟨tri.B, tri.C⟩⟩
@@ -347,10 +347,10 @@ noncomputable def angles : Quadrilateral → Quadruple Angle
 | ⟨A, B, C, D⟩ => ⟨⟨D, A, B⟩, ⟨A, B, C⟩, ⟨B, C, D⟩, ⟨C, D, A⟩⟩
 
 noncomputable def uangles (quad : Quadrilateral) : Quadruple ℝ2π :=
-Angle.uangle <$> quad.angles
+uangle <$> quad.angles
 
 noncomputable def dangles (quad : Quadrilateral) : Quadruple ℝπ  :=
-Angle.dangle <$> quad.angles
+dangle <$> quad.angles
 
 -- could either be that there exists a circle with all points on it,
 -- or could define a circle with three of the points and ensure that the other two are on it

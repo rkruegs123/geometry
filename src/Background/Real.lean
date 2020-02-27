@@ -77,7 +77,8 @@ noncomputable instance : HasSub ℝ2π := ⟨WIP⟩
 noncomputable instance : HasPi ℝ2π := ⟨WIP⟩
 noncomputable instance : HasLess ℝ2π := ⟨WIP⟩
 noncomputable instance : HasLessEq ℝ2π := ⟨WIP⟩
-noncomputable instance : HasMul ℝ2π := ⟨WIP⟩ -- adding this thinking the implementation could include a final mod 2π. If not, may have to change to subtypes
+noncomputable instance : HasMul ℝ2π := ⟨WIP⟩
+noncomputable instance : HasDiv ℝ2π := ⟨WIP⟩
 
 end RealMod2π
 
