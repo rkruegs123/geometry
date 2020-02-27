@@ -22,28 +22,34 @@ def on {α : Type} [HasOn α] : Point → α → Prop := HasOn.on
 class HasInOrderOn (α : Type) := (inOrderOn: List Point → α → Prop)
 def inOrderOn {α : Type} [HasInOrderOn α] : List Point → α → Prop := HasInOrderOn.inOrderOn
 
+
 section
 variables {α β : Type} [HasOn α] [HasOn β]
 
+def allOn (x : α) (ps : List Point) : Prop := ps.allP (flip on x)
+
 def intersectAt (x : α) (y : β) : Set Point := λ p => on p x ∧ on p y
-def intersectAt₂ (x : α) (y : β) (p₁ p₂ : Point) : Prop := intersectAt x y p₁ ∧ intersectAt x y p₂ ∧ p₁ ≠ p₂
+def intersectAtt₂ (x : α) (y : β) (p₁ p₂ : Point) : Prop := intersectAt x y p₁ ∧ intersectAt x y p₂ ∧ p₁ ≠ p₂
 def intersect (x : α) (y : β) : Prop := Exists (intersectAt x y)
+
 def allIntersectAt (xs : List α) : Set Point := λ p => xs.allP (on p)
 def allIntersect (xs : List α) : Prop := Exists (allIntersectAt xs)
+
+def allIntersectAt₂ (xs : List α) (ys : List β) : Set Point :=
+λ p => xs.allP (on p) ∧ ys.allP (on p)
+def allIntersect₂ (xs : List α) (ys : List β) : Prop := 
+Exists (allIntersectAt₂ xs ys)
+
+def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
+
 def tangentAt (x : α) (y : β) : Set Point := unique (intersectAt x y)
 def tangent (x : α) (y : β) : Prop := Exists (tangentAt x y)
 
 -- ryankrue: is there a better way to do this?
 -- ryankrue: note that this is ordered (e.g., the second element is the second point of intersection)
-noncomputable def intersectionPoints (x : α) (y : β) : List Point := WIP
-noncomputable def numIntersections (x : α) (y : β) : Nat := (intersectionPoints x y).length
+--noncomputable def intersectionPoints (x : α) (y : β) : List Point := WIP
+--noncomputable def numIntersections (x : α) (y : β) : Nat := (intersectionPoints x y).length
 
-namespace Utilities
-
-def allOn (x : α) (ps : List Point) : Prop := ps.allP (flip on x)
-def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
-
-end Utilities
 
 end
 
@@ -160,7 +166,9 @@ instance : HasInside Circle := ⟨Circle.inside⟩
 
 noncomputable def diameter (Γ : Circle) : ℝ₊ := Γ.radius * 2
 def isDiameter (p₁ p₂ : Point) (Γ : Circle) : Prop :=
-on p₁ Γ ∧ on p₂ Γ ∧ ulen (Seg.mk p₁ p₂) = Γ.diameter
+ulen (Seg.mk p₁ p₂) = Γ.diameter
+def isDiameter₂ (p₁ p₂ : Point) (Γ : Circle) : Prop :=
+on p₁ Γ ∧ on p₂ Γ ∧ isDiameter p₁ p₂ Γ
 
 protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 π * Γ.radius^2
@@ -180,7 +188,7 @@ noncomputable def commonExtTangents (Γ₁ Γ₂ : Circle) : List Line := WIP
 end Circle
 
 noncomputable def cycl (ps : List Point) : Prop :=
-Exists (λ (Γ : Circle) => Utilities.allOn Γ ps)
+Exists (λ (Γ : Circle) => allOn Γ ps)
 
 structure Arc (Γ : Circle) : Type := (src dst avoid : Point)
 
@@ -229,11 +237,7 @@ namespace Triangle
 
 protected def mk (A B C : Point) : Triangle := ⟨A, B, C⟩
 
-protected noncomputable def buildLLL (l₁ l₂ l₃ : Line) : Triangle :=
-let v₁₂ := (intersectionPoints l₁ l₂).head!;
-let v₁₃ := (intersectionPoints l₁ l₃).head!;
-let v₂₃ := (intersectionPoints l₂ l₃).head!;
-⟨v₁₂, v₁₃, v₂₃⟩
+protected noncomputable def buildLLL (l₁ l₂ l₃ : Line) : Triangle := WIP
 
 protected def on : Point → Triangle → Prop := WIP
 
@@ -396,6 +400,7 @@ end Polygon
 
 open Polygon
 
+/- UNCOMMENT FOR >2 types intersecting
 namespace WithInst
 
 def ListWithInst (ϕ : ∀ (α : Type), Type) : Type 1 := List (Sigma (λ γ => ϕ γ × γ))
@@ -403,8 +408,10 @@ def allIntersectAt₂ (xs : ListWithInst HasOn) : Set Point := λ p => xs.allP (
 def allIntersect₂ (xs : ListWithInst HasOn) : Prop := Exists (allIntersectAt₂ xs)
 
 def intersectElem {α : Type} [inst : HasOn α] (x : α) : Sigma (λ γ => HasOn γ × γ) := ⟨α, ⟨inst, x⟩⟩
---def examplePolymorphicSpec (a b c : Point) : Prop := allIntersect₂ [intersectElem $ Seg.mk a b, intersectElem $ Line.mk a c]
+--def examplePolymorphicSpec (a b c : Point) : Prop := 
+allIntersect₂ [intersectElem $ Seg.mk a b, intersectElem $ Line.mk a c]
 
 end WithInst
+-/
 
 end Geo

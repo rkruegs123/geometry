@@ -2,7 +2,7 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Geo.Polygon
+open Polygon
 
 def IMO_2003_P3 : Prop :=
 ∀ (hex : Polygon 6),

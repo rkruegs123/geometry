@@ -4,15 +4,16 @@ namespace Geo
 
 open Quadrilateral
 open Triangle
+open Seg
 
 def IMO_2005_P5 : Prop :=
 ∀ (A B C D E F P Q R Comm : Point),
 convex ⟨A, B, C, D⟩ →
-cong (Seg.mk B C) (Seg.mk D A) →
-¬para (Line.mk B C) (Line.mk D A) → -- ryankrue: is this the best way to denote "not parallel"?
+cong ⟨B, C⟩ ⟨D, A⟩ →
+¬para  ⟨B, C⟩ ⟨D, A⟩ →
 on E (Seg.mk B C) →
 on F (Seg.mk D A) →
-cong (Seg.mk B E) (Seg.mk D F) →
+cong ⟨B, E⟩ ⟨D, F⟩ →
 intersectAt (Line.mk A C) (Line.mk B D) P →
 intersectAt (Line.mk B D) (Line.mk E F) Q →
 intersectAt (Line.mk E F) (Line.mk A C) R →
