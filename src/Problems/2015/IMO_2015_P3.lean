@@ -16,7 +16,7 @@ on Q Γ →
 Angle.isRight ⟨H, Q, A⟩ →
 on K Γ →
 Angle.isRight ⟨H, K, Q⟩ →
-inOrderOn [A, B, C, K] Γ →
+inOrderOn [A, B, C, K, Q] Γ →
 tangent (circumcircle ⟨K, Q, H⟩) (circumcircle ⟨F, K, M⟩)
 
 end Geo

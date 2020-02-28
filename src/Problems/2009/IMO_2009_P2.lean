@@ -3,6 +3,7 @@ import Geo.Geo.Core
 namespace Geo
 
 open Triangle
+open Seg
 
 def IMO_2009_P1 : Prop :=
 ∀ (A B C P Q : Point),
@@ -14,6 +15,6 @@ let L := midp (Seg.mk C Q);
 let M := midp (Seg.mk P Q);
 let Γ := Circle.buildPPP K L M;
 tangent (Line.mk P Q) Γ →
-cong (Seg.mk O P) (Seg.mk O Q)
+cong ⟨O, P⟩ ⟨O, Q⟩
 
 end Geo

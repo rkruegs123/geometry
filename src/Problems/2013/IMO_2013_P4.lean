@@ -13,10 +13,10 @@ let M := foot B (Line.mk A C);
 let N := foot C (Line.mk A B);
 let ω₁ := circumcircle ⟨B, W, N⟩;
 on X ω₁ →
-ulen (Seg.mk W X) = ω₁.diameter →
+Circle.isDiameter W X ω₁ →
 let ω₂ := circumcircle ⟨C, W, M⟩;
 on Y ω₂ →
-ulen (Seg.mk W Y) = ω₂.diameter →
+Circle.isDiameter W Y ω₂ →
 coll X Y H
 
 end Geo

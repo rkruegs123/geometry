@@ -116,9 +116,6 @@ instance : HasOn Seg := ⟨Seg.on⟩
 protected def inOrderOn (ps : List Point) : Seg → Prop := WIP
 instance : HasInOrderOn Seg := ⟨Seg.inOrderOn⟩
 
-def toLine (l : Seg) : Line := ⟨l.src, l.dst⟩
-instance : HasCoe Seg Line := ⟨toLine⟩
-
 protected noncomputable def ulen (l : Seg) : ℝ≥ :=
 ⟨Analytic.dist l.src l.dst, Analytic.distGe0 _ _⟩
 noncomputable instance : HasLength Seg := ⟨Seg.ulen⟩

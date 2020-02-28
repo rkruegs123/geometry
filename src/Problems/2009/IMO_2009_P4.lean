@@ -4,14 +4,15 @@ namespace Geo
 
 open Triangle
 open Angle
+open Seg
 
 def IMO_2009_P4 : Prop :=
 ∀ (A B C D E : Point),
-cong (Seg.mk A B) (Seg.mk A C) →
+cong ⟨A, B⟩ ⟨A, C⟩ →
 intersectAt (Angle.bisector ⟨C, A, B⟩) (Seg.mk B C) D →
 intersectAt (Angle.bisector ⟨A, B, C⟩) (Seg.mk C A) E →
 let K := incenter ⟨A, D, C⟩;
-uangle ⟨B, E, K⟩ = Quot.mk RealMod2πEquivalence (π / 4) →
-uangle ⟨C, A, B⟩ = Quot.mk RealMod2πEquivalence (π / 3) ∨ uangle ⟨C, A, B⟩ = Quot.mk RealMod2πEquivalence (π / 2)
+Analytic.degToRadians 45 = uangle ⟨B, E, K⟩ →
+Analytic.degToRadians 60 = uangle ⟨C, A, B⟩ ∨ Analytic.degToRadians 90 = uangle ⟨C, A, B⟩
 
 end Geo
