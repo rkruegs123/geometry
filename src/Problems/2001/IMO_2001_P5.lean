@@ -12,16 +12,18 @@ import Geo.Geo.Core
 
 namespace Geo
 
+open Analytic Angle
+
 def IMO_2001_P5 : Prop :=
 ∀ (A B C P Q : Point),
-Angle.isBisector ⟨A, P⟩ ⟨B, A, C⟩ →
+isBisector ⟨A, P⟩ ⟨B, A, C⟩ →
 on P (Seg.mk B C) →
-Angle.isBisector ⟨B, Q⟩ ⟨A, B, C⟩ →
+isBisector ⟨B, Q⟩ ⟨A, B, C⟩ →
 on Q (Seg.mk C A) →
-Analytic.degToRadians 60 = uangle ⟨B, A, C⟩ →
+degToRadians 60 = uangle ⟨B, A, C⟩ →
 ulen (Seg.mk A B) + ulen (Seg.mk B P) = ulen (Seg.mk A Q) + ulen (Seg.mk Q B) →
-Analytic.degToRadians 80 = uangle ⟨C, B, A⟩ → -- witness to determined problem
-Analytic.degToRadians 40 = uangle ⟨A, C, B⟩ -- witness to determined problem
+degToRadians 80 = uangle ⟨C, B, A⟩ → -- witness to determined problem
+degToRadians 40 = uangle ⟨A, C, B⟩ -- witness to determined problem
 -- NOTE: Solution is trivial given the above witnesses
 
 end Geo

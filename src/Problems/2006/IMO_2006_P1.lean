@@ -2,8 +2,7 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Triangle
-open Seg
+open Seg Triangle
 
 def IMO_2006_P1 : Prop :=
 ∀ (A B C P : Point),

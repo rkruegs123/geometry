@@ -14,6 +14,6 @@ intersectAt (Line.mk L M) (Line.mk B J) F →
 intersectAt (Line.mk K M) (Line.mk C J) G →
 intersectAt (Line.mk A F) (Line.mk B C) S →
 intersectAt (Line.mk A G) (Line.mk B C) T →
-M = midp (Seg.mk S T)
+Seg.isMidpoint M ⟨S, T⟩
 
 end Geo

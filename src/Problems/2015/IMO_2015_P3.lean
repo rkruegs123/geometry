@@ -9,8 +9,8 @@ def IMO_2015_P3 : Prop :=
 acute ⟨A, B, C⟩ →
 ulen (Seg.mk A B) > ulen (Seg.mk A C) →
 let H := orthocenter ⟨A, B, C⟩;
-let F := foot A (Seg.mk B C);
-let M := midp (Seg.mk B C);
+let F := foot A ⟨B, C⟩; -- check this
+let M := (Seg.mk B C).midp;
 let Γ := circumcircle ⟨A, B, C⟩;
 on Q Γ →
 Angle.isRight ⟨H, Q, A⟩ →

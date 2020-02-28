@@ -2,9 +2,6 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Geo.Triangle
-open Geo.Angle
-
 def IMO_2019_P2 : Prop :=
 ∀ (A B C A₁ B₁ P Q P₁ Q₁ : Point),
 on A₁ (Seg.mk B C) →
@@ -15,7 +12,7 @@ para ⟨P, Q⟩ ⟨A, B⟩ →
 on B (Seg.mk P P₁) → -- (strict) alt: coll & bet
 uangle ⟨P, P₁, C⟩ = uangle ⟨B, A, C⟩ →
 on A₁ (Seg.mk Q Q₁) →
-Angle.uangle ⟨C, Q₁, Q⟩ = Angle.uangle ⟨C, B, A⟩ →
+uangle ⟨C, Q₁, Q⟩ = uangle ⟨C, B, A⟩ →
 cycl [P, Q, P₁, Q₁]
 
 end Geo

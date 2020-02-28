@@ -22,14 +22,14 @@ def on {α : Type} [HasOn α] : Point → α → Prop := HasOn.on
 class HasInOrderOn (α : Type) := (inOrderOn: List Point → α → Prop)
 def inOrderOn {α : Type} [HasInOrderOn α] : List Point → α → Prop := HasInOrderOn.inOrderOn
 
-
 section
 variables {α β : Type} [HasOn α] [HasOn β]
 
-def allOn (x : α) (ps : List Point) : Prop := ps.allP (flip on x)
+def allOn (ps : List Point) (x : α) : Prop := ps.allP (flip on x)
 
 def intersectAt (x : α) (y : β) : Set Point := λ p => on p x ∧ on p y
-def intersectAtt₂ (x : α) (y : β) (p₁ p₂ : Point) : Prop := intersectAt x y p₁ ∧ intersectAt x y p₂ ∧ p₁ ≠ p₂
+def intersectAt₂ (x : α) (y : β) (p₁ p₂ : Point) : Prop :=
+intersectAt x y p₁ ∧ intersectAt x y p₂ ∧ p₁ ≠ p₂
 def intersect (x : α) (y : β) : Prop := Exists (intersectAt x y)
 
 def allIntersectAt (xs : List α) : Set Point := λ p => xs.allP (on p)
@@ -40,7 +40,8 @@ def allIntersectAt₂ (xs : List α) (ys : List β) : Set Point :=
 def allIntersect₂ (xs : List α) (ys : List β) : Prop := 
 Exists (allIntersectAt₂ xs ys)
 
-def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := ps.allP (λ p => intersectAt x y p)
+def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := 
+ps.allP (λ p => intersectAt x y p)
 
 def tangentAt (x : α) (y : β) : Set Point := unique (intersectAt x y)
 def tangent (x : α) (y : β) : Prop := Exists (tangentAt x y)
@@ -68,9 +69,6 @@ def sarea {α : Type} [HasSignedArea α] : α → ℝ  := HasSignedArea.sarea
 class HasLength (α : Type) := (ulen : α → ℝ≥)
 def ulen {α : Type} [HasLength α] : α → ℝ≥ := HasLength.ulen
 
-class HasMidpoint (α : Type) := (midp : α → Point)
-def midp {α : Type} [HasMidpoint α] : α → Point := HasMidpoint.midp
-
 structure Line : Type := (p₁ p₂ : Point)
 
 namespace Line
@@ -83,6 +81,9 @@ def wf : Line → Prop
 protected def on (p : Point) : Line → Prop
 | ⟨a, b⟩ => a ≠ b ∧ Analytic.coll p a b -- TODO: bundle NDGs like this?
 instance : HasOn Line := ⟨Line.on⟩
+
+def concur (ls : List Line) : Prop := WIP -- TODO: none equal and none parallel?
+
 
 protected def inOrderOn (ps : List Point) : Line → Prop := WIP
 instance : HasInOrderOn Line := ⟨Line.inOrderOn⟩
@@ -110,8 +111,11 @@ structure Seg : Type := (src dst : Point)
 
 namespace Seg
 
-protected def on (p : Point) (l : Seg) : Prop := WIP -- (on line & btw)
+protected def on (p : Point) (l : Seg) : Prop := WIP -- (on line & btw, including endpoints)
 instance : HasOn Seg := ⟨Seg.on⟩
+
+def strictlyBtw (p₁ p₂ p₃ : Point) : Prop :=
+on p₁ (Seg.mk p₂ p₃) ∧ p₁ ≠ p₂ ∧ p₁ ≠ p₃
 
 protected def inOrderOn (ps : List Point) : Seg → Prop := WIP
 instance : HasInOrderOn Seg := ⟨Seg.inOrderOn⟩
@@ -120,15 +124,14 @@ protected noncomputable def ulen (l : Seg) : ℝ≥ :=
 ⟨Analytic.dist l.src l.dst, Analytic.distGe0 _ _⟩
 noncomputable instance : HasLength Seg := ⟨Seg.ulen⟩
 
-protected noncomputable def midp (l : Seg) : Point :=
-Analytic.midp l.src l.dst
-noncomputable instance : HasMidpoint Seg := ⟨Seg.midp⟩
+protected noncomputable def midp (l : Seg) : Point := Analytic.midp l.src l.dst
+protected def isMidpoint (p : Point) (l : Seg) : Prop := p = l.midp
 
 def cong (l₁ l₂ : Seg) : Prop := ulen l₁ = ulen l₂
 
 end Seg
 
-noncomputable def perpBis (l : Seg) : Line := ⟨midp l, perpTo (midp l) l.dst⟩
+noncomputable def perpBis (l : Seg) : Line := ⟨Seg.midp l, perpTo (Seg.midp l) l.dst⟩
 
 structure Ray : Type := (src dst : Point)
 
@@ -182,10 +185,12 @@ protected noncomputable def buildDiam (diameter : Seg) : Circle := WIP
 
 noncomputable def commonExtTangents (Γ₁ Γ₂ : Circle) : List Line := WIP
 
+def isOrigin (p : Point) (Γ : Circle) : Prop := p = Γ.origin
+
 end Circle
 
 noncomputable def cycl (ps : List Point) : Prop :=
-Exists (λ (Γ : Circle) => allOn Γ ps)
+Exists (λ (Γ : Circle) => allOn ps Γ)
 
 structure Arc (Γ : Circle) : Type := (src dst avoid : Point)
 
@@ -202,11 +207,11 @@ instance : HasInOrderOn (Arc Γ) := ⟨Arc.inOrderOn⟩ -- ryankrue: potentially
 protected noncomputable def ulen (arc : Arc Γ) : ℝ≥ := WIP -- ARITH
 noncomputable instance : HasLength (Arc Γ) := ⟨Arc.ulen⟩
 
-protected noncomputable def midp (arc : Arc Γ) : Point := WIP -- ARITH
-noncomputable instance : HasMidpoint (Arc Γ) := ⟨Arc.midp⟩
-
 noncomputable def buildMinor (Γ : Circle) : Point → Point → Arc Γ := WIP
 noncomputable def buildMajor (Γ : Circle) : Point → Point → Arc Γ := WIP
+
+protected noncomputable def midp (a : Arc Γ) : Point := WIP
+protected def isMidpoint (p : Point) (a : Arc Γ) : Prop := p = a.midp
 
 end Arc
 
@@ -275,13 +280,15 @@ noncomputable def altitudes : Triangle → Triple Line :=
 cmap $ λ tri => ⟨tri.A, foot tri.A ⟨tri.B, tri.C⟩⟩
 
 noncomputable def medians : Triangle → Triple Line :=
-cmap $ λ tri => ⟨tri.A, midp (Seg.mk tri.B tri.C)⟩
+cmap $ λ tri => ⟨tri.A, Seg.midp ⟨tri.B, tri.C⟩⟩
 
 noncomputable def circumcenter  : Triangle → Point := WIP
 noncomputable def incenter      : Triangle → Point := WIP
 noncomputable def orthocenter   : Triangle → Point := WIP
 noncomputable def centroid      : Triangle → Point := WIP
 noncomputable def excenters     : Triangle → Triple Point := WIP
+
+def isIncenter (p : Point) (tri : Triangle) : Prop := p = tri.incenter
 
 noncomputable def circumcircle  : Triangle → Circle := WIP
 noncomputable def incircle      : Triangle → Circle := WIP

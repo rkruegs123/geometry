@@ -2,9 +2,7 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Quadrilateral
-open Triangle
-open Seg
+open Quadrilateral Seg Triangle
 
 def IMO_2006_P6 : Prop :=
 ∀ (A B C D : Point) (ω : Circle),

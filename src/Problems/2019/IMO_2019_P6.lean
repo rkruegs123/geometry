@@ -2,12 +2,12 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Geo.Triangle
+open Seg Triangle
 
 def IMO_2019_P6 : Prop :=
 ∀ (A B C D E F R P Q : Point),
 acute ⟨A, B, C⟩ →
-¬cong (Seg.mk A B) (Seg.mk A C) →
+¬cong ⟨A, B⟩ ⟨A, C⟩ →
 let I := incenter ⟨A, B, C⟩;
 let ω := incircle ⟨A, B, C⟩;
 tangentAt ω (Seg.mk B C) D →

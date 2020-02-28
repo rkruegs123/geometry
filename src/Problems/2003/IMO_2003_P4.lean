@@ -2,8 +2,7 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Quadrilateral
-open Angle
+open Angle Quadrilateral
 
 def IMO_2003_P4 : Prop :=
 ∀ (A B C D : Point),

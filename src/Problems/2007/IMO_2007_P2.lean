@@ -2,8 +2,7 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Quadrilateral
-open Seg
+open Quadrilateral Seg
 
 def IMO_2007_P2 : Prop :=
 ∀ (A B C D E F G : Point) (l : Line),
