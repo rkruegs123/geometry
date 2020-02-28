@@ -276,10 +276,10 @@ uangle <$> tri.angles
 noncomputable def dangles (tri : Triangle) : Triple ℝπ  :=
 dangle <$> tri.angles
 
-noncomputable def altitudes : Triangle → Triple Line :=
+noncomputable def altitudes : Triangle → Triple Seg :=
 cmap $ λ tri => ⟨tri.A, foot tri.A ⟨tri.B, tri.C⟩⟩
 
-noncomputable def medians : Triangle → Triple Line :=
+noncomputable def medians : Triangle → Triple Seg :=
 cmap $ λ tri => ⟨tri.A, Seg.midp ⟨tri.B, tri.C⟩⟩
 
 noncomputable def circumcenter  : Triangle → Point := WIP
