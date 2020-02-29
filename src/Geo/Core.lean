@@ -46,12 +46,6 @@ ps.allP (λ p => intersectAt x y p)
 def tangentAt (x : α) (y : β) : Set Point := unique (intersectAt x y)
 def tangent (x : α) (y : β) : Prop := Exists (tangentAt x y)
 
--- ryankrue: is there a better way to do this?
--- ryankrue: note that this is ordered (e.g., the second element is the second point of intersection)
---noncomputable def intersectionPoints (x : α) (y : β) : List Point := WIP
---noncomputable def numIntersections (x : α) (y : β) : Nat := (intersectionPoints x y).length
-
-
 end
 
 class HasInside (α : Type) := (inside : Point → α → Prop)
@@ -201,9 +195,6 @@ variable {Γ : Circle}
 protected def on (p : Point) (arc : Arc Γ) : Prop := WIP -- ARITH
 instance: HasOn (Arc Γ) := ⟨Arc.on⟩
 
-protected def inOrderOn (ps : List Point) : Arc Γ → Prop := WIP
-instance : HasInOrderOn (Arc Γ) := ⟨Arc.inOrderOn⟩ -- ryankrue: potentially don't need depending on Circle representation
-
 protected noncomputable def ulen (arc : Arc Γ) : ℝ≥ := WIP -- ARITH
 noncomputable instance : HasLength (Arc Γ) := ⟨Arc.ulen⟩
 
@@ -239,7 +230,7 @@ namespace Triangle
 
 protected def mk (A B C : Point) : Triangle := ⟨A, B, C⟩
 
-protected noncomputable def buildLLL (l₁ l₂ l₃ : Line) : Triangle := WIP
+protected noncomputable def buildLLL (ls : Triple Line) : Triangle := WIP
 
 protected def on : Point → Triangle → Prop := WIP
 
@@ -256,6 +247,9 @@ noncomputable instance : HasSignedArea Triangle := ⟨Triangle.sarea⟩
 
 def sides : Triangle → Triple Seg
 | ⟨A, B, C⟩ => ⟨⟨B, C⟩, ⟨C, A⟩, ⟨A, B⟩⟩
+
+def vertices : Triangle → Triple Point
+| ⟨A, B, C⟩ => ⟨A, B, C⟩
 
 noncomputable def sideLengths (tri : Triangle) : Triple ℝ≥ :=
 ulen <$> sides tri
@@ -291,10 +285,22 @@ noncomputable def excenters     : Triangle → Triple Point := WIP
 def isIncenter (p : Point) (tri : Triangle) : Prop := p = tri.incenter
 
 noncomputable def circumcircle  : Triangle → Circle := WIP
-noncomputable def incircle      : Triangle → Circle := WIP
-
 -- ryankrue: excircles.A ought to be the excircle across from X in a triangle ⟨X, Y, Z⟩
 noncomputable def excircles     : Triangle → Triple Circle := WIP
+noncomputable def incircle      : Triangle → Circle := WIP
+/-
+See the following link for formula in Trilinear coordinates: 
+
+en.wikipedia.org/wiki/Incircle_and_excircles_of_a_triangle#Gergonne_triangle_and_point
+
+IMO 2000 P6 requires this. There are notes there for more general ways to accomplish this.
+
+May want a function that maps Trilinear coordinates and a Triangle to cartesian
+-/
+-- Points ordered as ⟨Ta, Tb, Tc⟩
+noncomputable def gergonneTriangle : Triangle → Triangle := WIP
+
+
 
 noncomputable def circumradius   : Triangle → ℝ₊ := WIP
 noncomputable def inradius       : Triangle → ℝ₊ := WIP
@@ -404,7 +410,7 @@ end Polygon
 
 open Polygon
 
-/- UNCOMMENT FOR >2 types intersecting
+/- UNCOMMENT for >2 types intersecting
 namespace WithInst
 
 def ListWithInst (ϕ : ∀ (α : Type), Type) : Type 1 := List (Sigma (λ γ => ϕ γ × γ))

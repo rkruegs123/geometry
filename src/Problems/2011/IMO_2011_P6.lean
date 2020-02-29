@@ -12,6 +12,6 @@ tangent l Γ →
 let la := reflect l (Line.mk B C);
 let lb := reflect l (Line.mk C A);
 let lc := reflect l (Line.mk A B);
-tangent Γ $ circumcircle (Triangle.buildLLL la lb lc)
+tangent Γ $ circumcircle (Triangle.buildLLL ⟨la, lb, lc⟩)
 
 end Geo
