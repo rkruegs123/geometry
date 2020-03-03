@@ -173,14 +173,11 @@ protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 noncomputable instance : HasUnsignedArea Circle := ⟨Circle.uarea⟩
 
 noncomputable def lineTangentAtP (Γ : Circle) (p : Point) : Line := WIP
-noncomputable def lineTangentAtP₃ (O P : Point) : Line := WIP
 
 protected noncomputable def buildOP (origin p : Point) : Circle := WIP
 protected noncomputable def buildPPP (p₁ p₂ p₃ : Point) : Circle := WIP
 protected noncomputable def buildDiam (p₁ p₂ : Point) : Circle :=
 Circle.buildOP (Seg.midp ⟨p₁, p₂⟩) p₁
-
-noncomputable def commonExtTangents (Γ₁ Γ₂ : Circle) : List Line := WIP
 
 def isOrigin (p : Point) (Γ : Circle) : Prop := p = Γ.origin
 
