@@ -2,18 +2,20 @@ import Geo.Geo.Core
 
 namespace Geo
 
-open Quadrilateral Seg
+open Angle Quadrilateral Seg
 
 def IMO_2007_P2 : Prop :=
-∀ (A B C D E F G : Point) (l : Line),
+∀ (A B C D E : Point),
 parallelogram ⟨A, B, C, D⟩ →
 cyclic ⟨B, C, E, D⟩ →
+∀ (l : Line),
 on A l →
+∀ (F G : Point),
 intersectAt l (Seg.mk D C) F →
 intersectAt l (Line.mk B C) G →
-cong ⟨E, F⟩ ⟨E, G⟩ → 
-cong ⟨E, F⟩ ⟨E, C⟩ → -- could make the above two simpler -- both a function that takes in two segments and checks that they are the same length, as well as one that can take in an arbitrary list of segments
-Angle.isBisector l ⟨D, A, B⟩
+cong ⟨E, F⟩ ⟨E, G⟩ →
+cong ⟨E, F⟩ ⟨E, C⟩ →
+isBisector l ⟨D, A, B⟩
 
 
 end Geo

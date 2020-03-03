@@ -5,13 +5,18 @@ namespace Geo
 open Analytic Arc Circle Triangle
 
 def IMO_2002_P2 : Prop :=
-∀ (A B C E F J O : Point) (Γ : Circle),
+∀ (B C O : Point) (Γ : Circle),
 isOrigin O Γ →
-allOn [A, B, C, E, F] Γ →
-isDiameter B C Γ → -- ryankrue: note there is isDiameter₂ for reordering
+isDiameter B C Γ →
+∀ (A : Point),
+on A Γ →
 degToRadians 60 < uangle ⟨A, O, C⟩ →
-Line.same (Line.mk E F) (perpBis ⟨A, O⟩) →
+∀ (E F : Point),
+on E Γ → -- ryankrue: could have isChord (p₁ p₂ : Point) (Γ : Circle)
+on F Γ →
+isPerpBis ⟨E, F⟩ ⟨A, O⟩ →
 let D := (buildMinor Γ A B).midp;
+∀ (J : Point),
 intersectAt (Line.buildPara O ⟨A, D⟩) (Line.mk A C) J →
 isIncenter J ⟨C, E, F⟩
 

@@ -15,8 +15,9 @@ namespace Geo
 open Analytic Angle Seg Triangle
 
 def IMO_2009_P4 : Prop :=
-∀ (A B C D E : Point),
+∀ (A B C : Point),
 cong ⟨A, B⟩ ⟨A, C⟩ →
+∀ (D E : Point),
 intersectAt (bisector ⟨C, A, B⟩) (Seg.mk B C) D →
 intersectAt (bisector ⟨A, B, C⟩) (Seg.mk C A) E →
 let K := incenter ⟨A, D, C⟩;

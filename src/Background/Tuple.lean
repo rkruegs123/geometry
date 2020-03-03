@@ -19,7 +19,7 @@ def cycles (t : Triple α) : Triple (Triple α) :=
 ⟨t, t.cycle, t.cycle.cycle⟩
 
 -- ryankrue: maybe there is a way to do this with cmap
-def uniquePairs (t : Triple α) : Triple (α × α) :=
+def cyclicPairs (t : Triple α) : Triple (α × α) :=
 Triple.map (λ (cyc : Triple α) => Prod.mk cyc.A cyc.B) t.cycles
 
 def cmap (f : Triple α → β) (t : Triple α) : Triple β :=

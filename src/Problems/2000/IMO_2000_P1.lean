@@ -5,28 +5,28 @@ namespace Geo
 open Seg
 
 def IMO_2000_P1 : Prop :=
-∀ (A B C D E M N P Q : Point),
+∀ (A B C D M N : Point),
 /-
-Deviation from problem statement: 
+Deviation from problem statement:
 
 The original problem statement begins with the following:
 "AB is tangent to the circles CAMN and NMBD."
 
-Rather than constructing circle from 4 points, we build a circle from 3 points 
-and confirm the 4th point is on that circle. In the future, this could be encoded
-as a predicate that takes a list of n > 3 points and checks that they all lie on
-a circle together by constructing a circle out of the first three and checking
-that the remaining points lie on that circle. Still wouldn't align with the text.
+We instead check that the quadrilateral is cyclic, and then use its circumcircle.
+
+Note that the implementation of Quadrilateral.cyclic works in the following way:
+-Build a circle from 3 points and confirm the 4th point is on that circle
 
 This problem is identical to the Polygon.convex problem
 -/
-on N (Circle.buildPPP C A M) → -- alternatively: Quadrilateral.cyclic ⟨C, A, M, N⟩
-on D (Circle.buildPPP N M B) → -- alternatively: Quadrilateral.cyclic ⟨N, M, B, D⟩
+Quadrilateral.cyclic ⟨C, A, M, N⟩ → -- under the hood: on N (Circle.buildPPP C A M)
+Quadrilateral.cyclic ⟨N, M, B, D⟩ → -- under the hood: on D (Circle.buildPPP N M B)
 -- may be useful to have tangentAtMany predicate
-tangent (Line.mk A B) (Circle.buildPPP C A M) →
-tangent (Line.mk A B) (Circle.buildPPP N M B) →
-strictlyBtw M C D →
+tangent (Line.mk A B) (Quadrilateral.circumcircle ⟨C, A, M, N⟩ WIP) →
+tangent (Line.mk A B) (Quadrilateral.circumcircle ⟨N, M, B, D⟩ WIP) →
+on M (Seg.mk C D) →
 para ⟨C, D⟩ ⟨A, B⟩ →
+∀ (E P Q : Point),
 intersectAt (Seg.mk N A) (Seg.mk C M) P →
 intersectAt (Seg.mk N B) (Seg.mk M D) Q →
 intersectAt (Ray.mk C A) (Ray.mk D B) E →

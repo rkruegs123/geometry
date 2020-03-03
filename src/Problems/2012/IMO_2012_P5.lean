@@ -5,9 +5,10 @@ namespace Geo
 open Analytic Seg Triangle
 
 def IMO_2012_P5 : Prop :=
-∀ (A B C K L M X : Point),
+∀ (A B C : Point),
 degToRadians 90 = uangle ⟨B, C, A⟩ →
 let D := (altitudes ⟨A, B, C⟩).C.dst;
+∀ (K L M X : Point),
 on X (Seg.mk C D) →
 on K (Seg.mk A X) →
 cong ⟨B, K⟩ ⟨B, C⟩ →

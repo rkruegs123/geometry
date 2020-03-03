@@ -37,10 +37,10 @@ def allIntersect (xs : List α) : Prop := Exists (allIntersectAt xs)
 
 def allIntersectAt₂ (xs : List α) (ys : List β) : Set Point :=
 λ p => xs.allP (on p) ∧ ys.allP (on p)
-def allIntersect₂ (xs : List α) (ys : List β) : Prop := 
+def allIntersect₂ (xs : List α) (ys : List β) : Prop :=
 Exists (allIntersectAt₂ xs ys)
 
-def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop := 
+def intersectAtMany (x : α) (y : β) (ps : List Point) : Prop :=
 ps.allP (λ p => intersectAt x y p)
 
 def tangentAt (x : α) (y : β) : Set Point := unique (intersectAt x y)
@@ -126,10 +126,15 @@ def cong (l₁ l₂ : Seg) : Prop := ulen l₁ = ulen l₂
 end Seg
 
 noncomputable def perpBis (l : Seg) : Line := ⟨Seg.midp l, perpTo (Seg.midp l) l.dst⟩
+def isPerpBis (l : Line) (s : Seg) : Prop := Line.same l (perpBis s)
 
 structure Ray : Type := (src dst : Point)
 
 namespace Ray
+
+--Note how current src/dst structure does not support an implementation for this
+--Also note how beyond serves as the dst point in this construction
+noncomputable def buildBeyond (src beyond : Point) : Ray := WIP
 
 protected def on (p : Point) (l : Ray) : Prop := WIP
 instance : HasOn Ray := ⟨Ray.on⟩
@@ -160,9 +165,7 @@ instance : HasInside Circle := ⟨Circle.inside⟩
 
 noncomputable def diameter (Γ : Circle) : ℝ₊ := Γ.radius * 2
 def isDiameter (p₁ p₂ : Point) (Γ : Circle) : Prop :=
-Γ.origin = Seg.midp (Seg.mk p₁ p₂)
-def isDiameter₂ (p₁ p₂ : Point) (Γ : Circle) : Prop :=
-on p₁ Γ ∧ on p₂ Γ ∧ isDiameter p₁ p₂ Γ
+on p₁ Γ ∧ on p₂ Γ ∧ Seg.isMidpoint (Γ.origin) ⟨p₁, p₂⟩
 
 protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 π * Γ.radius^2
@@ -170,12 +173,12 @@ protected noncomputable def uarea (Γ : Circle) : ℝ≥ :=
 noncomputable instance : HasUnsignedArea Circle := ⟨Circle.uarea⟩
 
 noncomputable def lineTangentAtP (Γ : Circle) (p : Point) : Line := WIP
-noncomputable def lineTangentAtP₂ (c : Circle) (p : Point) : on p c → Line := WIP
 noncomputable def lineTangentAtP₃ (O P : Point) : Line := WIP
 
 protected noncomputable def buildOP (origin p : Point) : Circle := WIP
 protected noncomputable def buildPPP (p₁ p₂ p₃ : Point) : Circle := WIP
-protected noncomputable def buildDiam (diameter : Seg) : Circle := WIP
+protected noncomputable def buildDiam (p₁ p₂ : Point) : Circle :=
+Circle.buildOP (Seg.midp ⟨p₁, p₂⟩) p₁
 
 noncomputable def commonExtTangents (Γ₁ Γ₂ : Circle) : List Line := WIP
 
@@ -218,7 +221,7 @@ noncomputable def dangle : Angle → ℝπ  := WIP
 namespace Angle
 
 noncomputable def bisector : Angle → Line := WIP
-def isBisector (l : Line) (ang : Angle) : Prop := WIP 
+def isBisector (l : Line) (ang : Angle) : Prop := WIP
 
 def isRight : Angle → Prop := WIP
 
@@ -284,18 +287,18 @@ noncomputable def excenters     : Triangle → Triple Point := WIP
 
 def isIncenter (p : Point) (tri : Triangle) : Prop := p = tri.incenter
 
-noncomputable def circumcircle  : Triangle → Circle := WIP
+protected noncomputable def circumcircle  : Triangle → Circle := WIP
 -- ryankrue: excircles.A ought to be the excircle across from X in a triangle ⟨X, Y, Z⟩
 noncomputable def excircles     : Triangle → Triple Circle := WIP
 noncomputable def incircle      : Triangle → Circle := WIP
 /-
-See the following link for formula in Trilinear coordinates: 
+See the following link for formula in Trilinear coordinates:
 
 en.wikipedia.org/wiki/Incircle_and_excircles_of_a_triangle#Gergonne_triangle_and_point
 
 IMO 2000 P6 requires this. There are notes there for more general ways to accomplish this.
 
-May want a function that maps Trilinear coordinates and a Triangle to cartesian
+Chen also has an easy way to get this.
 -/
 -- Points ordered as ⟨Ta, Tb, Tc⟩
 noncomputable def gergonneTriangle : Triangle → Triangle := WIP
@@ -329,7 +332,7 @@ end Triangle
 
 open Quadruple (cmap any all)
 
-def Quadrilateral : Type := Quadruple Point
+abbrev Quadrilateral : Type := Quadruple Point
 
 namespace Quadrilateral
 
@@ -369,7 +372,8 @@ dangle <$> quad.angles
 -- could either be that there exists a circle with all points on it,
 -- or could define a circle with three of the points and ensure that the other two are on it
 -- (this way we don't have an existential)
-def cyclic   : Quadrilateral → Prop := WIP
+def cyclic   : Quadrilateral → Prop
+| ⟨A, B, C, D⟩ => on D (Circle.buildPPP A B C)
 def convex   : Quadrilateral → Prop := WIP
 def regular  : Quadrilateral → Prop := WIP
 def harmonic : Quadrilateral → Prop := WIP
@@ -380,7 +384,12 @@ convex quad ∧ para quad.esides.A quad.esides.C ∧ para quad.esides.B quad.esi
 def trapezoid (quad : Quadrilateral) : Prop :=
 convex quad ∧ (para quad.esides.A quad.esides.C ∨ para quad.esides.B quad.esides.D)
 
+protected noncomputable def circumcircle (quad : Quadrilateral) (cyclicPf : cyclic quad) : Circle :=
+Circle.buildPPP quad.A quad.B quad.C
+
 end Quadrilateral
+
+open Triangle Quadrilateral
 
 /-
 Triangle and Quadrilateral could be made Polygons.
@@ -406,20 +415,22 @@ noncomputable def angles (pgon : Polygon n) : Vec Angle n := WIP
 def convex : Polygon n → Prop := WIP
 def regular : Polygon n → Prop := WIP
 
-end Polygon
+-- TODO: Vec.zip (pgon.sides.take half) (pgon.sides.drop half)
+noncomputable def oppoSides {n} (pgon : Polygon n) (evenPf : n % 2 = 0)
+: Vec (Seg × Seg) (n / 2) := WIP
 
-open Polygon
+end Polygon
 
 /- UNCOMMENT for >2 types intersecting
 namespace WithInst
 
 def ListWithInst (ϕ : ∀ (α : Type), Type) : Type 1 := List (Sigma (λ γ => ϕ γ × γ))
-def allIntersectAt₂ (xs : ListWithInst HasOn) : Set Point := 
+def allIntersectAt₂ (xs : ListWithInst HasOn) : Set Point :=
 λ p => xs.allP (λ ⟨α, ⟨inst, x⟩⟩ => on p x)
 def allIntersect₂ (xs : ListWithInst HasOn) : Prop := Exists (allIntersectAt₂ xs)
 
 def intersectElem {α : Type} [inst : HasOn α] (x : α) : Sigma (λ γ => HasOn γ × γ) := ⟨α, ⟨inst, x⟩⟩
---def examplePolymorphicSpec (a b c : Point) : Prop := 
+--def examplePolymorphicSpec (a b c : Point) : Prop :=
 allIntersect₂ [intersectElem $ Seg.mk a b, intersectElem $ Line.mk a c]
 
 end WithInst
