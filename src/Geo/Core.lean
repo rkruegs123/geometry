@@ -160,7 +160,7 @@ instance : HasInside Circle := ⟨Circle.inside⟩
 
 noncomputable def diameter (Γ : Circle) : ℝ₊ := Γ.radius * 2
 def isDiameter (p₁ p₂ : Point) (Γ : Circle) : Prop :=
-ulen (Seg.mk p₁ p₂) = Γ.diameter
+Γ.origin = Seg.midp (Seg.mk p₁ p₂)
 def isDiameter₂ (p₁ p₂ : Point) (Γ : Circle) : Prop :=
 on p₁ Γ ∧ on p₂ Γ ∧ isDiameter p₁ p₂ Γ
 
@@ -414,7 +414,8 @@ open Polygon
 namespace WithInst
 
 def ListWithInst (ϕ : ∀ (α : Type), Type) : Type 1 := List (Sigma (λ γ => ϕ γ × γ))
-def allIntersectAt₂ (xs : ListWithInst HasOn) : Set Point := λ p => xs.allP (λ ⟨α, ⟨inst, x⟩⟩ => on p x)
+def allIntersectAt₂ (xs : ListWithInst HasOn) : Set Point := 
+λ p => xs.allP (λ ⟨α, ⟨inst, x⟩⟩ => on p x)
 def allIntersect₂ (xs : ListWithInst HasOn) : Prop := Exists (allIntersectAt₂ xs)
 
 def intersectElem {α : Type} [inst : HasOn α] (x : α) : Sigma (λ γ => HasOn γ × γ) := ⟨α, ⟨inst, x⟩⟩

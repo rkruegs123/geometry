@@ -4,7 +4,7 @@ namespace Geo
 
 open Quadrilateral Seg Triangle
 
-def IMO_2006_P6 : Prop :=
+def IMO_2008_P6 : Prop :=
 ∀ (A B C D : Point) (ω : Circle),
 convex ⟨A, B, C, D⟩ →
 ¬cong ⟨B, A⟩ ⟨B, C⟩ →
